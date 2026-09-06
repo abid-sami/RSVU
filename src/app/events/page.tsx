@@ -7,7 +7,7 @@ import { EventCountdown } from "@/components/events/EventCountdown";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { EventCard } from "@/components/events/EventCard";
 import { EventFilterBar, EventStatusFilter } from "@/components/events/EventFilterBar";
-import { upcomingEvents, pastEvents, ongoingEvents, allEvents, getDefaultEventFilter, ClubEvent } from "@/data/eventsData";
+import { upcomingEvents, pastEvents, allEvents, getDefaultEventFilter, ClubEvent } from "@/data/eventsData";
 import {
   Calendar,
   Trophy,
@@ -29,7 +29,6 @@ export default function EventsPage() {
 
   const counts = {
     all: allEvents.length,
-    ongoing: ongoingEvents.length,
     upcoming: upcomingEvents.length,
     past: pastEvents.length,
   };
@@ -69,7 +68,7 @@ export default function EventsPage() {
         <EventCountdown />
       </div>
 
-      {/* Interactive Filter Bar: All / Running / Upcoming / Past */}
+      {/* Interactive Filter Bar: All / Upcoming / Past */}
       <div className="mb-10">
         <EventFilterBar
           currentFilter={filter}
@@ -78,7 +77,7 @@ export default function EventsPage() {
         />
       </div>
 
-      {/* Active Registration Banner (shown for All, Running, Upcoming) */}
+      {/* Active Registration Banner (shown for All, Upcoming) */}
       {filter !== "past" && (
         <div className="mb-8 flex flex-wrap items-center justify-between gap-4 p-4 rounded-xl bg-cyan-500/5 border border-cyan-500/20">
           <div className="flex items-center gap-3">

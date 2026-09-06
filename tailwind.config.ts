@@ -35,6 +35,7 @@ const config: Config = {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
         display: ["var(--font-orbitron)", "sans-serif"],
         mono: ["var(--font-mono)", "monospace"],
+        roboto: ["var(--font-roboto)", "Roboto", "'Canva Sans'", "system-ui", "sans-serif"],
       },
       boxShadow: {
         "cyan-glow": "0 0 25px -5px rgba(0, 240, 255, 0.4)",

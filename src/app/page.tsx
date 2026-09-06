@@ -11,12 +11,13 @@ import { EventCard } from "@/components/events/EventCard";
 import { ComponentCard } from "@/components/components-catalog/ComponentCard";
 import { LightboxModal } from "@/components/gallery/LightboxModal";
 import { EventFilterBar, EventStatusFilter } from "@/components/events/EventFilterBar";
-import { allEvents, ongoingEvents, upcomingEvents, pastEvents, getDefaultEventFilter } from "@/data/eventsData";
+import { allEvents, upcomingEvents, pastEvents, getDefaultEventFilter } from "@/data/eventsData";
 import { componentsList, ComponentItem } from "@/data/componentsData";
 import { achievementsList, achievementStats } from "@/data/achievementsData";
 import { galleryItems } from "@/data/galleryData";
 import { clubTargets } from "@/data/targetData";
 import { useAdminData } from "@/contexts/AdminDataContext";
+import { AchievementCard } from "@/components/achievements/AchievementCard";
 import {
   Compass,
   Cpu,
@@ -44,7 +45,6 @@ export default function HomePage() {
 
   const eventCounts = {
     all: allEvents.length,
-    ongoing: ongoingEvents.length,
     upcoming: upcomingEvents.length,
     past: pastEvents.length,
   };
@@ -343,39 +343,9 @@ export default function HomePage() {
           </div>
 
           {/* Top 3 Achievements Showcase */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="space-y-6 sm:space-y-8">
             {achievementsList.slice(0, 3).map((ach) => (
-              <div
-                key={ach.id}
-                className="cyber-panel rounded-xl p-6 border border-cyan-500/20 hover:border-cyan-400/50 flex flex-col justify-between transition-all group"
-              >
-                <div>
-                  <div className="flex items-center justify-between gap-2 mb-3">
-                    <span className="px-2.5 py-0.5 rounded bg-amber-500/10 border border-amber-500/30 text-amber-300 font-mono text-xs font-bold flex items-center gap-1.5">
-                      <Trophy className="w-3 h-3" />
-                      {ach.award}
-                    </span>
-                    <span className="text-xs font-mono text-slate-400">{ach.year}</span>
-                  </div>
-
-                  <h3 className="font-tech text-lg font-bold text-white group-hover:text-cyan-300 uppercase italic transition-colors">
-                    {ach.title}
-                  </h3>
-
-                  <p className="mt-1 text-xs font-mono text-cyan-400">
-                    {ach.competition}
-                  </p>
-
-                  <p className="mt-3 text-xs text-slate-300 font-sans leading-relaxed">
-                    {ach.description}
-                  </p>
-                </div>
-
-                <div className="mt-6 pt-4 border-t border-cyan-500/15 flex items-center justify-between text-[11px] font-mono text-slate-400">
-                  <span>Bot: <strong className="text-slate-200">{ach.projectOrBotName}</strong></span>
-                  <span className="text-cyan-400">{ach.organizer.split("(")[0]}</span>
-                </div>
-              </div>
+              <AchievementCard key={ach.id} item={ach} hideMembersOnMobile={true} />
             ))}
           </div>
 

@@ -8,7 +8,7 @@ import { ConfirmModal } from "@/components/admin/ConfirmModal";
 import { EmptyState } from "@/components/admin/EmptyState";
 import { Plus, Search, Edit2, Trash2, CalendarDays, Power, Radio } from "lucide-react";
 
-const EVENT_CATEGORIES: EventCategory[] = ["Running", "Upcoming", "Past"];
+const EVENT_CATEGORIES: EventCategory[] = ["Upcoming", "Past"];
 
 export default function AdminEventsPage() {
   const { events, addEvent, updateEvent, deleteEvent, countdown, updateCountdown } = useAdminData();
@@ -21,6 +21,7 @@ export default function AdminEventsPage() {
   // Form state
   const [name, setName] = useState("");
   const [category, setCategory] = useState<EventCategory>("Upcoming");
+  const [registration, setRegistration] = useState<"Open" | "Closed">("Open");
   const [date, setDate] = useState("");
   const [place, setPlace] = useState("");
   const [prizePool, setPrizePool] = useState("");
@@ -33,7 +34,7 @@ export default function AdminEventsPage() {
   const [countdownDate, setCountdownDate] = useState(countdown.eventDate ? countdown.eventDate.split("T")[0] : "");
 
   const resetForm = () => {
-    setName(""); setCategory("Upcoming"); setDate(""); setPlace("");
+    setName(""); setCategory("Upcoming"); setRegistration("Open"); setDate(""); setPlace("");
     setPrizePool(""); setPrice(""); setRegistrationLink(""); setEditing(null);
   };
 
@@ -41,14 +42,14 @@ export default function AdminEventsPage() {
 
   const openEdit = (ev: AdminEvent) => {
     setEditing(ev);
-    setName(ev.name); setCategory(ev.category); setDate(ev.date);
+    setName(ev.name); setCategory(ev.category); setRegistration(ev.registration || "Open"); setDate(ev.date);
     setPlace(ev.place); setPrizePool(ev.prizePool); setPrice(ev.price || ""); setRegistrationLink(ev.registrationLink);
     setFormOpen(true);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const data = { name, category, date, place, prizePool, price, registrationLink };
+    const data = { name, category, registration, date, place, prizePool, price, registrationLink };
     if (editing) {
       updateEvent(editing.id, data);
     } else {
@@ -78,7 +79,6 @@ export default function AdminEventsPage() {
 
   const getCategoryColor = (cat: EventCategory) => {
     switch (cat) {
-      case "Running": return "bg-emerald-500/15 text-emerald-400 border-emerald-500/30";
       case "Upcoming": return "bg-cyan-500/15 text-cyan-400 border-cyan-500/30";
       case "Past": return "bg-slate-500/15 text-slate-400 border-slate-500/30";
     }
@@ -182,6 +182,7 @@ export default function AdminEventsPage() {
                 <tr className="bg-slate-900/50 border-b border-slate-800/60">
                   <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Event</th>
                   <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Category</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Registration</th>
                   <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Date</th>
                   <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Place</th>
                   <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Prize Pool</th>
@@ -197,6 +198,15 @@ export default function AdminEventsPage() {
                     </td>
                     <td className="px-4 py-3">
                       <span className={`px-2 py-0.5 rounded border text-xs ${getCategoryColor(ev.category)}`}>{ev.category}</span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className={`px-2 py-0.5 rounded border text-xs font-mono font-semibold ${
+                        ev.registration === "Closed"
+                          ? "bg-red-500/15 text-red-400 border-red-500/30"
+                          : "bg-emerald-500/15 text-emerald-400 border-emerald-500/30"
+                      }`}>
+                        {ev.registration || "Open"}
+                      </span>
                     </td>
                     <td className="px-4 py-3 text-slate-400">{ev.date}</td>
                     <td className="px-4 py-3 text-slate-300">{ev.place}</td>
@@ -227,11 +237,19 @@ export default function AdminEventsPage() {
         <FormField label="Event Name" required>
           <input type="text" value={name} onChange={(e) => setName(e.target.value)} required className={inputClass} placeholder="ROBOSPARK 2026" />
         </FormField>
-        <FormField label="Category" required>
-          <select value={category} onChange={(e) => setCategory(e.target.value as EventCategory)} className={selectClass}>
-            {EVENT_CATEGORIES.map((cat) => <option key={cat} value={cat}>{cat}</option>)}
-          </select>
-        </FormField>
+        <div className="grid grid-cols-2 gap-4">
+          <FormField label="Category" required>
+            <select value={category} onChange={(e) => setCategory(e.target.value as EventCategory)} className={selectClass}>
+              {EVENT_CATEGORIES.map((cat) => <option key={cat} value={cat}>{cat}</option>)}
+            </select>
+          </FormField>
+          <FormField label="Registration" required>
+            <select value={registration} onChange={(e) => setRegistration(e.target.value as "Open" | "Closed")} className={selectClass}>
+              <option value="Open">Open</option>
+              <option value="Closed">Closed</option>
+            </select>
+          </FormField>
+        </div>
         <div className="grid grid-cols-2 gap-4">
           <FormField label="Date" required>
             <input type="text" value={date} onChange={(e) => setDate(e.target.value)} required className={inputClass} placeholder="November 28, 2026" />

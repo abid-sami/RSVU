@@ -2,7 +2,7 @@ export interface ClubEvent {
   id: string;
   title: string;
   category: "Robo Soccer" | "Line Follower" | "Hardware Showcase" | "Poster Presentation" | "Workshop" | "Championship";
-  status: "upcoming" | "past" | "ongoing";
+  status: "upcoming" | "past";
   date: string;
   time?: string;
   venue: string;
@@ -14,31 +14,12 @@ export interface ClubEvent {
   fullDescription: string;
   highlights: string[];
   rulebookUrl?: string;
+  registration?: "Open" | "Closed";
   registrationOpen?: boolean;
 }
 
-export const ongoingEvents: ClubEvent[] = [
-  {
-    id: "autonomous-sprint-2026",
-    title: "Autonomous Robotics & ROS 2 Sprint",
-    category: "Workshop",
-    status: "ongoing",
-    date: "Current Session · Active Now",
-    time: "03:00 PM - 06:30 PM",
-    venue: "Robotics Club, Room 102, Ground Floor",
-    fee: "Free (Members)",
-    teamSize: "Open to Active Members",
-    image: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=1000&q=80",
-    shortDescription: "Live hands-on sprint covering Gazebo simulation, micro-ROS ESP32 bridge, and LiDAR SLAM navigation.",
-    fullDescription:
-      "An intensive mid-semester laboratory sprint where club engineers build micro-ROS communication bridges, tune PID algorithms on test tracks, and prototype dual-differential robot bases.",
-    highlights: ["Live Hardware Testing Arena", "Direct Lab Mentorship", "micro-ROS & ESP32 Telemetry"],
-    rulebookUrl: "#rulebook-sprint",
-    registrationOpen: true,
-  },
-];
-
 export const upcomingEvents: ClubEvent[] = [
+ 
   {
     id: "robo-soccer-2026",
     title: "Robo Soccer Championship",
@@ -172,10 +153,9 @@ export const pastEvents: ClubEvent[] = [
   },
 ];
 
-export const allEvents: ClubEvent[] = [...ongoingEvents, ...upcomingEvents, ...pastEvents];
+export const allEvents: ClubEvent[] = [...upcomingEvents, ...pastEvents];
 
-export const getDefaultEventFilter = (): "ongoing" | "upcoming" | "past" => {
-  if (ongoingEvents.length > 0) return "ongoing";
+export const getDefaultEventFilter = (): "upcoming" | "past" => {
   if (upcomingEvents.length > 0) return "upcoming";
   return "past";
 };

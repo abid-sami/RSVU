@@ -31,7 +31,7 @@ export interface AdminBorrowing {
 }
 
 // ---------- Events ----------
-export type EventCategory = "Running" | "Upcoming" | "Past";
+export type EventCategory = "Upcoming" | "Past";
 
 export interface AdminEvent {
   id: string;
@@ -41,6 +41,7 @@ export interface AdminEvent {
   place: string;
   prizePool: string;
   price?: string;
+  registration?: "Open" | "Closed";
   registrationLink: string;
   image?: string;
   createdAt: string;
@@ -58,7 +59,11 @@ export interface AdminMember {
   id: string;
   name: string;
   designation: string;
-  education: string;
+  department: string;
+  batch?: string;
+  role?: string;
+  memberType?: "student" | "faculty";
+  education?: string;
   photo: string;
   createdAt: string;
 }

@@ -3,16 +3,16 @@
 import React from "react";
 import { Sparkles, Radio, Calendar, Clock, Layers } from "lucide-react";
 
-export type EventStatusFilter = "all" | "ongoing" | "upcoming" | "past";
+export type EventStatusFilter = "all" | "upcoming" | "past";
 
 export interface EventFilterBarProps {
   currentFilter: EventStatusFilter;
   onFilterChange: (filter: EventStatusFilter) => void;
   counts?: {
     all?: number;
-    ongoing: number;
     upcoming: number;
     past: number;
+    ongoing?: number;
   };
   className?: string;
   hideAllOption?: boolean;
@@ -37,14 +37,6 @@ export const EventFilterBar: React.FC<EventFilterBarProps> = ({
       label: "All Events",
       icon: <Layers className="w-3.5 h-3.5" />,
       activeClass: "bg-cyan-400 text-cyan-950 shadow-[0_0_20px_rgba(0,240,255,0.5)] border-cyan-300",
-    },
-    {
-      id: "ongoing",
-      label: "Running",
-      icon: <Radio className="w-3.5 h-3.5" />,
-      isLive: true,
-      activeClass:
-        "bg-emerald-500 text-emerald-950 font-black shadow-[0_0_25px_rgba(16,185,129,0.6)] border-emerald-300",
     },
     {
       id: "upcoming",
