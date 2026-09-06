@@ -185,13 +185,17 @@ export default function AboutPage() {
               key={adv.id}
               className="cyber-panel rounded-2xl p-8 border border-cyan-500/20 hover:border-cyan-400/50 flex flex-col sm:flex-row items-center sm:items-start gap-6 transition-all group"
             >
-              <div className="relative w-28 h-28 rounded-xl overflow-hidden shrink-0 border-2 border-cyan-500/40 group-hover:border-cyan-400">
+              <div
+                className="relative w-24 sm:w-28 aspect-[3/4] rounded-xl overflow-hidden shrink-0 border-2 border-cyan-500/40 group-hover:border-cyan-400 bg-slate-950"
+                style={{ aspectRatio: "3 / 4" }}
+              >
+                <div className="pt-[133.33%] w-full pointer-events-none" />
                 <Image
                   src={adv.avatar}
                   alt={adv.name}
                   fill
                   sizes="120px"
-                  className="object-cover"
+                  className="absolute inset-0 w-full h-full object-cover object-top"
                 />
               </div>
 

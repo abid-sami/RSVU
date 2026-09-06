@@ -66,9 +66,17 @@ export default function AdminMembersPage() {
             <div key={m.id} className="bg-slate-900/30 border border-slate-800/60 rounded-xl p-4 hover:border-slate-700 transition-all">
               <div className="flex items-start gap-3">
                 {m.photo ? (
-                  <img src={m.photo} alt={m.name} className="w-14 h-14 rounded-lg object-cover bg-slate-800 shrink-0" />
+                  <img
+                    src={m.photo}
+                    alt={m.name}
+                    className="w-14 aspect-[3/4] rounded-lg object-cover object-top bg-slate-800 shrink-0"
+                    style={{ aspectRatio: "3 / 4" }}
+                  />
                 ) : (
-                  <div className="w-14 h-14 rounded-lg bg-slate-800 flex items-center justify-center shrink-0">
+                  <div
+                    className="w-14 aspect-[3/4] rounded-lg bg-slate-800 flex items-center justify-center shrink-0"
+                    style={{ aspectRatio: "3 / 4" }}
+                  >
                     <Users className="w-6 h-6 text-slate-600" />
                   </div>
                 )}
@@ -92,10 +100,11 @@ export default function AdminMembersPage() {
         <FormField label="Designation" required><input type="text" value={designation} onChange={(e) => setDesignation(e.target.value)} required className={inputClass} placeholder="e.g. President, Technical Lead" /></FormField>
         <FormField label="Education" required><input type="text" value={education} onChange={(e) => setEducation(e.target.value)} required className={inputClass} placeholder="e.g. Dept. of CSE, 18th Batch" /></FormField>
         <ImageUploadField
-          label="Member Photo"
+          label="Member Photo (3:4 Portrait)"
           value={photo}
           onChange={setPhoto}
-          helpText="Upload a portrait photo from your device or provide a link."
+          aspectRatio="3:4"
+          helpText="Upload a 3:4 portrait photo from your device or provide a link."
         />
       </FormModal>
 

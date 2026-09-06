@@ -11,6 +11,7 @@ interface ImageUploadFieldProps {
   required?: boolean;
   maxSizeMB?: number;
   helpText?: string;
+  aspectRatio?: "3:4" | "16:9" | "1:1" | string;
 }
 
 /**
@@ -72,6 +73,7 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
   required = false,
   maxSizeMB = 10,
   helpText,
+  aspectRatio,
 }) => {
   const [mode, setMode] = useState<"device" | "url">(
     value && !value.startsWith("data:") ? "url" : "device"
@@ -254,12 +256,12 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
       {/* Image Preview Box */}
       {value ? (
         <div className="relative flex items-center gap-3 p-2.5 rounded-xl bg-slate-900/80 border border-slate-800">
-          <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-slate-950 border border-slate-800 shrink-0">
+          <div className={`relative ${aspectRatio === "3:4" ? "w-14 aspect-[3/4]" : "w-16 h-16"} rounded-lg overflow-hidden bg-slate-950 border border-slate-800 shrink-0`}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={value}
               alt="Preview"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover object-top"
               onError={() => setError("Unable to preview this image URL.")}
             />
           </div>
