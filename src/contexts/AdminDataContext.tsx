@@ -12,6 +12,7 @@ import {
   AdminCountdown,
   DashboardStats,
 } from "@/lib/adminTypes";
+import { galleryItems } from "@/data/galleryData";
 
 // =============================================
 // Admin Data Context — localStorage CRUD
@@ -77,6 +78,18 @@ const DEFAULT_GALLERY_CATEGORIES: AdminGalleryCategory[] = [
   { id: "cat-team", name: "Team & Events" },
 ];
 
+// Default gallery images from galleryData (first 6 pinned)
+const DEFAULT_GALLERY_IMAGES: AdminGalleryImage[] = galleryItems.map((item) => ({
+  id: item.id,
+  title: item.title,
+  categoryId: item.category === "Competitions" ? "cat-competitions" : item.category === "Workshops" ? "cat-workshops" : item.category === "Hardware Labs" ? "cat-hardware" : "cat-team",
+  categoryName: item.category,
+  image: item.image,
+  caption: item.caption,
+  isPinned: item.isPinned ?? false,
+  createdAt: new Date().toISOString(),
+}));
+
 // ---------- Context Type ----------
 interface AdminDataContextType {
   // Components
@@ -118,6 +131,7 @@ interface AdminDataContextType {
   addGalleryImage: (data: Omit<AdminGalleryImage, "id" | "createdAt">) => void;
   updateGalleryImage: (id: string, data: Partial<AdminGalleryImage>) => void;
   deleteGalleryImage: (id: string) => void;
+  togglePinGalleryImage: (id: string) => void;
   addGalleryCategory: (name: string) => void;
   updateGalleryCategory: (id: string, name: string) => void;
   deleteGalleryCategory: (id: string) => void;
@@ -152,7 +166,7 @@ export function AdminDataProvider({ children }: { children: React.ReactNode }) {
     setEvents(getFromStorage<AdminEvent>(KEYS.events, []));
     setMembers(getFromStorage<AdminMember>(KEYS.members, []));
     setAchievements(getFromStorage<AdminAchievement>(KEYS.achievements, []));
-    setGalleryImages(getFromStorage<AdminGalleryImage>(KEYS.galleryImages, []));
+    setGalleryImages(getFromStorage<AdminGalleryImage>(KEYS.galleryImages, DEFAULT_GALLERY_IMAGES));
     setGalleryCategories(getFromStorage<AdminGalleryCategory>(KEYS.galleryCategories, DEFAULT_GALLERY_CATEGORIES));
     setCountdown(getObjectFromStorage<AdminCountdown>(KEYS.countdown, DEFAULT_COUNTDOWN));
   }, []);
@@ -371,6 +385,21 @@ export function AdminDataProvider({ children }: { children: React.ReactNode }) {
     showToast("Gallery image deleted", "success");
   }, [showToast]);
 
+  const togglePinGalleryImage = useCallback((id: string) => {
+    setGalleryImages((prev) => {
+      const target = prev.find((img) => img.id === id);
+      const currentlyPinned = prev.filter((img) => img.isPinned).length;
+      if (!target?.isPinned && currentlyPinned >= 6) {
+        showToast("Maximum 6 images can be pinned to Homepage", "error");
+        return prev;
+      }
+      const next = prev.map((img) => (img.id === id ? { ...img, isPinned: !img.isPinned } : img));
+      saveToStorage(KEYS.galleryImages, next);
+      showToast(!target?.isPinned ? "Image pinned to Homepage" : "Image unpinned from Homepage", "success");
+      return next;
+    });
+  }, [showToast]);
+
   const addGalleryCategory = useCallback((name: string) => {
     setGalleryCategories((prev) => {
       const item: AdminGalleryCategory = { id: generateId(), name };
@@ -447,6 +476,7 @@ export function AdminDataProvider({ children }: { children: React.ReactNode }) {
         addGalleryImage,
         updateGalleryImage,
         deleteGalleryImage,
+        togglePinGalleryImage,
         addGalleryCategory,
         updateGalleryCategory,
         deleteGalleryCategory,

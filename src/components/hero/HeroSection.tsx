@@ -145,7 +145,7 @@ export const HeroSection: React.FC = () => {
 
       {/* Metrics Banner Bar at the base of Hero */}
       <div className="relative z-20 w-full max-w-5xl mx-auto px-2 sm:px-6 lg:px-8 mt-12">
-        <div className="cyber-panel rounded-xl py-3 sm:py-4 px-2 sm:px-6 border border-cyan-500/30 grid grid-cols-3 divide-x divide-cyan-500/20 shadow-[0_10px_35px_rgba(0,0,0,0.8)]">
+        {/* <div className="cyber-panel rounded-xl py-3 sm:py-4 px-2 sm:px-6 border border-cyan-500/30 grid grid-cols-3 divide-x divide-cyan-500/20 shadow-[0_10px_35px_rgba(0,0,0,0.8)]">
           <div className="flex flex-col items-center justify-center text-center px-1 sm:px-4">
             
             <span className="block font-tech font-black text-xl sm:text-2xl md:text-3xl text-white tracking-wider text-glow-subtle leading-tight">
@@ -175,7 +175,7 @@ export const HeroSection: React.FC = () => {
               Events Organized
             </span>
           </div>
-        </div>
+        </div> */}
 
         {/* Scroll indicator */}
         <button

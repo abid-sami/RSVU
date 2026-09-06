@@ -7,6 +7,7 @@ export interface ClubEvent {
   time?: string;
   venue: string;
   prizePool?: string;
+  fee?: string;
   teamSize?: string;
   image: string;
   shortDescription: string;
@@ -25,6 +26,7 @@ export const ongoingEvents: ClubEvent[] = [
     date: "Current Session · Active Now",
     time: "03:00 PM - 06:30 PM",
     venue: "Robotics Club, Room 102, Ground Floor",
+    fee: "Free (Members)",
     teamSize: "Open to Active Members",
     image: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=1000&q=80",
     shortDescription: "Live hands-on sprint covering Gazebo simulation, micro-ROS ESP32 bridge, and LiDAR SLAM navigation.",
@@ -43,9 +45,10 @@ export const upcomingEvents: ClubEvent[] = [
     category: "Robo Soccer",
     status: "upcoming",
     date: "November 28, 2026",
-    time: "10:00 AM - 05:00 PM",
+    time: "",
     venue: "Main Arena, Central Auditorium, VU",
     prizePool: "BDT 40,000",
+    fee: "BDT 1,500",
     teamSize: "2 - 4 Members",
     image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=1000&q=80",
     shortDescription: "High-octane autonomous & manual bots clashing in tactical gridiron football matches.",
@@ -64,6 +67,7 @@ export const upcomingEvents: ClubEvent[] = [
     time: "11:30 AM - 04:00 PM",
     venue: "Robotics Track Zone B, Ground Floor",
     prizePool: "BDT 35,000",
+    fee: "BDT 1,000",
     teamSize: "1 - 3 Members",
     image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1000&q=80",
     shortDescription: "PID-tuned speedsters navigating acute turns, intersections, inverted colors, and speed bumps.",
@@ -82,6 +86,7 @@ export const upcomingEvents: ClubEvent[] = [
     time: "09:30 AM - 03:30 PM",
     venue: "Engineering Atrium & Innovation Hall",
     prizePool: "BDT 50,000",
+    fee: "BDT 1,200",
     teamSize: "2 - 5 Members",
     image: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1000&q=80",
     shortDescription: "Innovative engineering prototypes solving industrial automation, healthcare, and robotics challenges.",
@@ -100,6 +105,7 @@ export const upcomingEvents: ClubEvent[] = [
     time: "10:00 AM - 02:00 PM",
     venue: "Faculty Seminar Hall 3, VU",
     prizePool: "BDT 25,000",
+    fee: "BDT 500",
     teamSize: "1 - 3 Members",
     image: "https://images.unsplash.com/photo-1507668077129-56e32842fceb?auto=format&fit=crop&w=1000&q=80",
     shortDescription: "Original research concepts in autonomous mobile robotics, computer vision, and ROS 2 pipelines.",
@@ -119,6 +125,7 @@ export const pastEvents: ClubEvent[] = [
     status: "past",
     date: "December 14, 2025",
     venue: "VU Main Campus, Rajshahi",
+    fee: "BDT 1,500",
     image: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=1000&q=80",
     shortDescription: "Over 65 teams from 22 universities competed in LFR, Soccer Bots, and Project Show.",
     fullDescription: "Our biggest flagship event gathered over 400 robotics enthusiasts across Bangladesh with fierce competition in line following and battle soccer.",
@@ -131,6 +138,7 @@ export const pastEvents: ClubEvent[] = [
     status: "past",
     date: "July 20, 2024",
     venue: "VU Robotics Lab Arena",
+    fee: "Free",
     image: "https://images.unsplash.com/photo-1563770660941-20978e870e26?auto=format&fit=crop&w=1000&q=80",
     shortDescription: "Freshman and sophomore members tested their custom QTR-8A sensor calibration.",
     fullDescription: "An internal skill-building tournament focused on algorithmic optimization, micro-step motor driving, and optical calibration for university students.",
@@ -143,6 +151,7 @@ export const pastEvents: ClubEvent[] = [
     status: "past",
     date: "October 10 - 15, 2023",
     venue: "Hardware Prototyping Lab 402",
+    fee: "BDT 500",
     image: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1000&q=80",
     shortDescription: "Intensive 5-day hands-on bootcamp building WiFi telemetry, MQTT relays, and smart sensors.",
     fullDescription: "Comprehensive training on dual-core microcontrollers, FreeRTOS basics, wireless camera streaming, and motor drivers.",
@@ -155,6 +164,7 @@ export const pastEvents: ClubEvent[] = [
     status: "past",
     date: "March 18, 2022",
     venue: "Computer Science Lab 3, VU",
+    fee: "Free",
     image: "https://images.unsplash.com/photo-1535378917042-10a22c95931a?auto=format&fit=crop&w=1000&q=80",
     shortDescription: "Simulating LiDAR SLAM, Gazebo environments, and waypoint navigation on TurtleBot chassis.",
     fullDescription: "Pioneering ROS 1 & 2 integration workshop at Varendra University for senior students developing autonomous delivery rovers.",

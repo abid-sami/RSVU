@@ -16,6 +16,7 @@ import { componentsList, ComponentItem } from "@/data/componentsData";
 import { achievementsList, achievementStats } from "@/data/achievementsData";
 import { galleryItems } from "@/data/galleryData";
 import { clubTargets } from "@/data/targetData";
+import { useAdminData } from "@/contexts/AdminDataContext";
 import {
   Compass,
   Cpu,
@@ -36,6 +37,7 @@ import {
 } from "lucide-react";
 
 export default function HomePage() {
+  const { galleryImages } = useAdminData();
   const [selectedGalleryIdx, setSelectedGalleryIdx] = useState<number | null>(null);
   const [borrowModalItem, setBorrowModalItem] = useState<ComponentItem | null>(null);
   const [eventFilter, setEventFilter] = useState<EventStatusFilter>(getDefaultEventFilter);
@@ -52,18 +54,31 @@ export default function HomePage() {
     return event.status === eventFilter;
   });
 
+  // Only show the pinned 6 images by admin, fallback to default pinned
+  const pinnedAdminImages = galleryImages.filter((img) => img.isPinned);
+  const displayedGallery = (
+    pinnedAdminImages.length > 0
+      ? pinnedAdminImages.slice(0, 6)
+      : galleryItems.filter((item) => item.isPinned).slice(0, 6)
+  ).map((img) => ({
+    id: img.id,
+    title: img.title || "RSVU Activity",
+    category: ("categoryName" in img ? img.categoryName : (img as any).category) as any,
+    date: ("createdAt" in img && img.createdAt ? new Date(img.createdAt).toLocaleDateString("en-US", { month: "short", year: "numeric" }) : (img as any).date) || "",
+    image: img.image,
+    caption: img.caption || "",
+    tag: "",
+  }));
+
   return (
     <div className="relative">
       {/* 1. Fullscreen Hero Section */}
       <HeroSection />
 
       {/* Explore Section Anchor */}
-      <div id="explore-section" className="relative pt-12">
-        {/* 2. Event Countdown Component (Configurable & Backend Ready) */}
-        <EventCountdown />
-
-        {/* 3. About Club Section */}
-        <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative">
+      <div id="explore-section" className="relative pt-8">
+        {/* 2. About Club Section */}
+        <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative">
           <SectionHeading
             badge="SYSTEM ARCHITECTURE & IDENTITY"
             title="THE GENESIS OF"
@@ -85,9 +100,7 @@ export default function HomePage() {
                   &ldquo;LEARN. BUILD. INNOVATE.&rdquo;
                 </h3>
 
-                <p className="mt-4 text-slate-300 font-sans leading-relaxed text-sm sm:text-base">
-                  At the Robotics Society of Varendra University (RSVU), we believe that robotics cannot be learned solely from textbooks. True engineering excellence is forged through burning solder, calibrating PID controller loops, calculating motor torques, and testing prototypes under arena pressure.
-                </p>
+                
 
                
               </div>
@@ -136,67 +149,84 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Right Column: Mission & Stats Card */}
-            <div className="lg:col-span-5 flex flex-col justify-between gap-6">
-              {/* Mission Card */}
-              <div className="cyber-panel rounded-2xl p-6 sm:p-8 border border-cyan-500/20 bg-gradient-to-br from-[#0c131f] to-[#080d16]">
-                <div className="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 mb-4">
-                  <Target className="w-5 h-5" />
+            {/* Right Column: Key Club Milestones & Stats */}
+            <div className="lg:col-span-5 grid grid-cols-2 gap-4 sm:gap-5">
+              {/* 1. 12 Years of Club */}
+              <div className="cyber-panel rounded-2xl p-5 sm:p-6 border border-cyan-500/20 bg-gradient-to-br from-[#0c131f] to-[#080d16] hover:border-cyan-400/50 hover:shadow-[0_0_25px_rgba(0,240,255,0.15)] transition-all group flex flex-col justify-between">
+                <div className="w-11 h-11 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 group-hover:scale-110 group-hover:border-cyan-400 transition-all mb-4">
+                  <Award className="w-5 h-5" />
                 </div>
-                <h4 className="font-tech text-lg font-bold text-white uppercase italic tracking-wide">
-                  MISSION & VISION
-                </h4>
-                <p className="mt-3 text-xs sm:text-sm text-slate-300 font-sans leading-relaxed">
-                  To establish Varendra University as the premier autonomous robotics and embedded hardware center of North Bengal, bridging academic theory with national technological impact.
-                </p>
+                <div>
+                  <div className="font-tech font-black text-3xl sm:text-4xl text-white group-hover:text-cyan-400 italic tracking-tight transition-colors text-glow-subtle">
+                    12
+                  </div>
+                  <div className="font-tech uppercase italic text-xs sm:text-sm text-slate-300 font-bold tracking-wide mt-1.5 leading-snug">
+                    Years of Club
+                  </div>
+                </div>
               </div>
 
-              {/* Lab Facilities Card */}
-              <div className="cyber-panel rounded-2xl p-6 sm:p-8 border border-cyan-500/20 bg-gradient-to-br from-[#0c131f] to-[#080d16]">
-                <div className="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 mb-4">
-                  <Boxes className="w-5 h-5" />
+              {/* 2. 41 Executive Members */}
+              <div className="cyber-panel rounded-2xl p-5 sm:p-6 border border-cyan-500/20 bg-gradient-to-br from-[#0c131f] to-[#080d16] hover:border-cyan-400/50 hover:shadow-[0_0_25px_rgba(0,240,255,0.15)] transition-all group flex flex-col justify-between">
+                <div className="w-11 h-11 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 group-hover:scale-110 group-hover:border-cyan-400 transition-all mb-4">
+                  <Users className="w-5 h-5" />
                 </div>
-                <h4 className="font-tech text-lg font-bold text-white uppercase italic tracking-wide">
-                  ROBOTICS & EMBEDDED LAB 402
-                </h4>
-                <p className="mt-2 text-xs sm:text-sm text-slate-300 font-sans leading-relaxed">
-                  Equipped with digital oscilloscopes, soldering rework stations, laser track arenas, and open component cabinets for club research squads.
-                </p>
+                <div>
+                  <div className="font-tech font-black text-3xl sm:text-4xl text-white group-hover:text-cyan-400 italic tracking-tight transition-colors text-glow-subtle">
+                    41
+                  </div>
+                  <div className="font-tech uppercase italic text-xs sm:text-sm text-slate-300 font-bold tracking-wide mt-1.5 leading-snug">
+                    Executive Members
+                  </div>
+                </div>
+              </div>
 
-                <div className="mt-4 pt-4 border-t border-cyan-500/15 flex items-center justify-between">
-                  <span className="text-xs font-mono text-cyan-400">Available to active members</span>
-                  <Link
-                    href="/components"
-                    className="text-xs font-mono text-slate-300 hover:text-cyan-300 flex items-center gap-1"
-                  >
-                    <span>Check Inventory</span>
-                    <ArrowRight className="w-3 h-3" />
-                  </Link>
+              {/* 3. 5 Events Organized */}
+              <div className="cyber-panel rounded-2xl p-5 sm:p-6 border border-cyan-500/20 bg-gradient-to-br from-[#0c131f] to-[#080d16] hover:border-cyan-400/50 hover:shadow-[0_0_25px_rgba(0,240,255,0.15)] transition-all group flex flex-col justify-between">
+                <div className="w-11 h-11 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 group-hover:scale-110 group-hover:border-cyan-400 transition-all mb-4">
+                  <Trophy className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="font-tech font-black text-3xl sm:text-4xl text-white group-hover:text-cyan-400 italic tracking-tight transition-colors text-glow-subtle">
+                    5
+                  </div>
+                  <div className="font-tech uppercase italic text-xs sm:text-sm text-slate-300 font-bold tracking-wide mt-1.5 leading-snug">
+                    Events Organized
+                  </div>
+                </div>
+              </div>
+
+              {/* 4. 10 Workshops */}
+              <div className="cyber-panel rounded-2xl p-5 sm:p-6 border border-cyan-500/20 bg-gradient-to-br from-[#0c131f] to-[#080d16] hover:border-cyan-400/50 hover:shadow-[0_0_25px_rgba(0,240,255,0.15)] transition-all group flex flex-col justify-between">
+                <div className="w-11 h-11 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 group-hover:scale-110 group-hover:border-cyan-400 transition-all mb-4">
+                  <Cpu className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="font-tech font-black text-3xl sm:text-4xl text-white group-hover:text-cyan-400 italic tracking-tight transition-colors text-glow-subtle">
+                    10
+                  </div>
+                  <div className="font-tech uppercase italic text-xs sm:text-sm text-slate-300 font-bold tracking-wide mt-1.5 leading-snug">
+                    Workshops
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
+        {/* 3. Event Countdown Component (Configurable & Backend Ready) */}
+        <EventCountdown />
+
         {/* 4. Events Section with Status Filter */}
         <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-cyan-500/10">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-6">
-            <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full badge-cyan text-xs font-mono tracking-wider uppercase mb-3">
-                <Calendar className="w-3.5 h-3.5" />
-                <span>CHAMPIONSHIP SEGMENTS & WORKSHOPS</span>
-              </div>
-              <h2 className="font-tech text-3xl sm:text-4xl md:text-5xl font-black text-white uppercase italic tracking-tight">
-                RSVU <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-cyan-200">EVENTS</span>
-              </h2>
+          <div className="text-center max-w-3xl mx-auto mb-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full badge-cyan text-xs font-mono tracking-wider uppercase mb-3">
+              <Calendar className="w-3.5 h-3.5" />
+              <span>CHAMPIONSHIP SEGMENTS & WORKSHOPS</span>
             </div>
-            <Link
-              href="/events"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded bg-slate-900 border border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/10 hover:border-cyan-400 text-xs font-tech font-bold uppercase tracking-wider transition-all"
-            >
-              <span>VIEW COMPLETE EVENT SCHEDULE</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
+            <h2 className="font-tech text-3xl sm:text-4xl md:text-5xl font-black text-white uppercase italic tracking-tight">
+              RSVU <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-cyan-200">EVENTS</span>
+            </h2>
           </div>
 
           {/* Interactive Filter Bar: Running / Upcoming / Past */}
@@ -211,9 +241,18 @@ export default function HomePage() {
 
           {/* Flagship Segments Grid */}
           {displayedEvents.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="flex flex-wrap justify-center gap-6">
               {displayedEvents.slice(0, 8).map((event) => (
-                <EventCard key={event.id} event={event} />
+                <div
+                  key={event.id}
+                  className={`w-full flex ${
+                    displayedEvents.length === 1
+                      ? "max-w-xl"
+                      : "sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)] min-w-[280px] max-w-sm"
+                  }`}
+                >
+                  <EventCard event={event} />
+                </div>
               ))}
             </div>
           ) : (
@@ -227,30 +266,32 @@ export default function HomePage() {
               </button>
             </div>
           )}
+
+          {/* Centered CTA Button after events */}
+          <div className="mt-12 text-center">
+            <Link
+              href="/events"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-slate-900 border border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/10 hover:border-cyan-400 text-xs font-tech font-bold uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(0,240,255,0.1)] hover:shadow-[0_0_25px_rgba(0,240,255,0.2)]"
+            >
+              <span>VIEW COMPLETE EVENT SCHEDULE</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
         </section>
 
         {/* 5. Components Availability Showcase */}
         <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-cyan-500/10">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
-            <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full badge-cyan text-xs font-mono tracking-wider uppercase mb-3">
-                <Cpu className="w-3.5 h-3.5" />
-                <span>HARDWARE VAULT</span>
-              </div>
-              <h2 className="font-tech text-3xl sm:text-4xl md:text-5xl font-black text-white uppercase italic tracking-tight">
-                COMPONENTS <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-cyan-200">AVAILABILITY</span>
-              </h2>
-              <p className="mt-3 text-sm text-slate-400 font-sans max-w-xl">
-                Browse our real-time inventory of microcontrollers, high-RPM motors, LiDAR sensors, and power systems available for university project check-out.
-              </p>
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full badge-cyan text-xs font-mono tracking-wider uppercase mb-3">
+              <Cpu className="w-3.5 h-3.5" />
+              <span>HARDWARE VAULT</span>
             </div>
-            <Link
-              href="/components"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded bg-cyan-400 hover:bg-cyan-300 text-cyan-950 text-xs font-tech font-bold uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(0,240,255,0.3)]"
-            >
-              <span>FULL INVENTORY CATALOG</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
+            <h2 className="font-tech text-3xl sm:text-4xl md:text-5xl font-black text-white uppercase italic tracking-tight">
+              COMPONENTS <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-cyan-200">AVAILABILITY</span>
+            </h2>
+            <p className="mt-3 text-sm text-slate-400 font-sans leading-relaxed">
+              Browse our real-time inventory of microcontrollers, high-RPM motors, LiDAR sensors, and power systems available for university project check-out.
+            </p>
           </div>
 
           {/* Components Grid Preview (First 4 items) */}
@@ -258,6 +299,17 @@ export default function HomePage() {
             {componentsList.slice(0, 4).map((comp) => (
               <ComponentCard key={comp.id} item={comp} />
             ))}
+          </div>
+
+          {/* Centered CTA Button after components */}
+          <div className="mt-12 text-center">
+            <Link
+              href="/components"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-cyan-400 hover:bg-cyan-300 text-cyan-950 text-xs font-tech font-bold uppercase tracking-wider transition-all shadow-[0_0_25px_rgba(0,240,255,0.35)]"
+            >
+              <span>FULL INVENTORY CATALOG</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
         </section>
 
@@ -398,63 +450,47 @@ export default function HomePage() {
 
         {/* 8. Activity Gallery Preview */}
         <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-cyan-500/10">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
-            <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full badge-cyan text-xs font-mono tracking-wider uppercase mb-3">
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>VISUAL CHRONICLES</span>
-              </div>
-              <h2 className="font-tech text-3xl sm:text-4xl md:text-5xl font-black text-white uppercase italic tracking-tight">
-                ACTIVITY <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-cyan-200">GALLERY</span>
-              </h2>
-              <p className="mt-3 text-sm text-slate-400 font-sans max-w-xl">
-                Snapshots from our hands-on robotics workshops, national stadium clashes, and lab experimentation.
-              </p>
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full badge-cyan text-xs font-mono tracking-wider uppercase mb-3">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>VISUAL CHRONICLES</span>
             </div>
+            <h2 className="font-tech text-3xl sm:text-4xl md:text-5xl font-black text-white uppercase italic tracking-tight">
+              ACTIVITY <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-cyan-200">GALLERY</span>
+            </h2>
+            <p className="mt-3 text-sm text-slate-400 font-sans leading-relaxed">
+              Snapshots from our hands-on robotics workshops, national stadium clashes, and lab experimentation.
+            </p>
+          </div>
+
+          {/* 6 Photo Grid with Hover Lightbox Click - Pinned Only, No Caption/Category */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {displayedGallery.slice(0, 6).map((item, idx) => (
+              <div
+                key={item.id}
+                onClick={() => setSelectedGalleryIdx(idx)}
+                className="group relative h-64 rounded-xl overflow-hidden cursor-pointer border border-cyan-500/20 hover:border-cyan-400 transition-all duration-300 shadow-md hover:shadow-[0_0_30px_rgba(0,240,255,0.25)] bg-slate-900"
+              >
+                <Image
+                  src={item.image}
+                  alt={item.title || "Gallery image"}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* Centered CTA Button after gallery */}
+          <div className="mt-12 text-center">
             <Link
               href="/gallery"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded bg-slate-900 border border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/10 hover:border-cyan-400 text-xs font-tech font-bold uppercase tracking-wider transition-all"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-slate-900 border border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/10 hover:border-cyan-400 text-xs font-tech font-bold uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(0,240,255,0.1)] hover:shadow-[0_0_25px_rgba(0,240,255,0.2)]"
             >
               <span>BROWSE ALL ALBUMS</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
-          </div>
-
-          {/* 6 Photo Grid with Hover Lightbox Click */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {galleryItems.slice(0, 6).map((item, idx) => (
-              <div
-                key={item.id}
-                onClick={() => setSelectedGalleryIdx(idx)}
-                className="group relative h-64 rounded-xl overflow-hidden cursor-pointer border border-cyan-500/20 hover:border-cyan-400 transition-all duration-300 shadow-md hover:shadow-[0_0_30px_rgba(0,240,255,0.25)]"
-              >
-                <Image
-                  src={item.image}
-                  alt={item.title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  className="object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#06090e] via-[#06090e]/40 to-transparent"></div>
-
-                {/* Tag */}
-                <div className="absolute top-3 left-3">
-                  <span className="px-2.5 py-1 rounded bg-black/70 border border-cyan-500/30 text-cyan-300 font-mono text-[10px] uppercase backdrop-blur-md">
-                    {item.category}
-                  </span>
-                </div>
-
-                {/* Caption on bottom */}
-                <div className="absolute bottom-0 inset-x-0 p-5 transform transition-transform duration-300">
-                  <span className="text-[11px] font-mono text-cyan-400 block mb-1">
-                    {item.date}
-                  </span>
-                  <h4 className="font-tech text-base font-bold text-white uppercase italic tracking-wide group-hover:text-cyan-300 transition-colors">
-                    {item.title}
-                  </h4>
-                </div>
-              </div>
-            ))}
           </div>
         </section>
 
@@ -501,7 +537,7 @@ export default function HomePage() {
 
       {/* Lightbox Modal */}
       <LightboxModal
-        items={galleryItems}
+        items={displayedGallery}
         currentIndex={selectedGalleryIdx}
         onClose={() => setSelectedGalleryIdx(null)}
         onNavigate={(newIdx) => setSelectedGalleryIdx(newIdx)}

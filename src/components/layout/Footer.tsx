@@ -203,7 +203,7 @@ export const Footer: React.FC = () => {
         {/* Bottom Bar with Developer Credit & Copyright */}
         <div className="pt-8 mt-8 border-t border-slate-800/80 flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-mono">
           <div className="text-slate-400 flex items-center gap-2">
-            <span>© {new Date().getFullYear()} RSVU Robotics · Varendra University. All Rights Reserved.</span>
+            <span>© {new Date().getFullYear()} Robotics Society of Varendra University</span>
           </div>
 
           {/* Prominent Developer Credit as requested */}

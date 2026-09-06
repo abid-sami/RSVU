@@ -40,8 +40,9 @@ export interface AdminEvent {
   date: string;
   place: string;
   prizePool: string;
+  price?: string;
   registrationLink: string;
-  image: string;
+  image?: string;
   createdAt: string;
 }
 
@@ -88,6 +89,7 @@ export interface AdminGalleryImage {
   categoryName: string;
   image: string; // URL or base64
   caption: string;
+  isPinned?: boolean;
   createdAt: string;
 }
 

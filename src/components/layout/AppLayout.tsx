@@ -4,6 +4,7 @@ import React from "react";
 import { usePathname } from "next/navigation";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { AdminDataProvider } from "@/contexts/AdminDataContext";
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -14,10 +15,10 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <>
+    <AdminDataProvider>
       <Navbar />
       <main className="flex-grow pt-16">{children}</main>
       <Footer />
-    </>
+    </AdminDataProvider>
   );
 }

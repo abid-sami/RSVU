@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { useAdminData } from "@/contexts/AdminDataContext";
 import { AdminEvent, EventCategory } from "@/lib/adminTypes";
 import { FormModal, FormField, inputClass, selectClass } from "@/components/admin/FormModal";
-import { ImageUploadField } from "@/components/admin/ImageUploadField";
 import { ConfirmModal } from "@/components/admin/ConfirmModal";
 import { EmptyState } from "@/components/admin/EmptyState";
 import { Plus, Search, Edit2, Trash2, CalendarDays, Power, Radio } from "lucide-react";
@@ -25,8 +24,8 @@ export default function AdminEventsPage() {
   const [date, setDate] = useState("");
   const [place, setPlace] = useState("");
   const [prizePool, setPrizePool] = useState("");
+  const [price, setPrice] = useState("");
   const [registrationLink, setRegistrationLink] = useState("");
-  const [image, setImage] = useState("");
 
   // Countdown state
   const [countdownEnabled, setCountdownEnabled] = useState(countdown.isEnabled);
@@ -35,7 +34,7 @@ export default function AdminEventsPage() {
 
   const resetForm = () => {
     setName(""); setCategory("Upcoming"); setDate(""); setPlace("");
-    setPrizePool(""); setRegistrationLink(""); setImage(""); setEditing(null);
+    setPrizePool(""); setPrice(""); setRegistrationLink(""); setEditing(null);
   };
 
   const openAdd = () => { resetForm(); setFormOpen(true); };
@@ -43,13 +42,13 @@ export default function AdminEventsPage() {
   const openEdit = (ev: AdminEvent) => {
     setEditing(ev);
     setName(ev.name); setCategory(ev.category); setDate(ev.date);
-    setPlace(ev.place); setPrizePool(ev.prizePool); setRegistrationLink(ev.registrationLink);
-    setImage(ev.image); setFormOpen(true);
+    setPlace(ev.place); setPrizePool(ev.prizePool); setPrice(ev.price || ""); setRegistrationLink(ev.registrationLink);
+    setFormOpen(true);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const data = { name, category, date, place, prizePool, registrationLink, image };
+    const data = { name, category, date, place, prizePool, price, registrationLink };
     if (editing) {
       updateEvent(editing.id, data);
     } else {
@@ -186,6 +185,7 @@ export default function AdminEventsPage() {
                   <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Date</th>
                   <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Place</th>
                   <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Prize Pool</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Price</th>
                   <th className="text-right px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
@@ -193,10 +193,7 @@ export default function AdminEventsPage() {
                 {filtered.map((ev) => (
                   <tr key={ev.id} className="hover:bg-slate-800/30 transition-colors">
                     <td className="px-4 py-3">
-                      <div className="flex items-center gap-3">
-                        {ev.image && <img src={ev.image} alt={ev.name} className="w-10 h-10 rounded-lg object-cover bg-slate-800" />}
-                        <span className="text-slate-200 font-medium">{ev.name}</span>
-                      </div>
+                      <span className="text-slate-200 font-medium">{ev.name}</span>
                     </td>
                     <td className="px-4 py-3">
                       <span className={`px-2 py-0.5 rounded border text-xs ${getCategoryColor(ev.category)}`}>{ev.category}</span>
@@ -204,6 +201,7 @@ export default function AdminEventsPage() {
                     <td className="px-4 py-3 text-slate-400">{ev.date}</td>
                     <td className="px-4 py-3 text-slate-300">{ev.place}</td>
                     <td className="px-4 py-3 text-amber-400">{ev.prizePool || "-"}</td>
+                    <td className="px-4 py-3 text-emerald-400">{ev.price || "-"}</td>
                     <td className="px-4 py-3 text-right">
                       <div className="flex items-center justify-end gap-1">
                         <button onClick={() => openEdit(ev)} className="p-2 rounded-lg hover:bg-slate-700/60 text-slate-400 hover:text-white transition-colors"><Edit2 className="w-4 h-4" /></button>
@@ -246,16 +244,13 @@ export default function AdminEventsPage() {
           <FormField label="Prize Pool">
             <input type="text" value={prizePool} onChange={(e) => setPrizePool(e.target.value)} className={inputClass} placeholder="BDT 50,000" />
           </FormField>
-          <FormField label="Registration Link">
-            <input type="url" value={registrationLink} onChange={(e) => setRegistrationLink(e.target.value)} className={inputClass} placeholder="https://..." />
+          <FormField label="Price (Entry Fee)">
+            <input type="text" value={price} onChange={(e) => setPrice(e.target.value)} className={inputClass} placeholder="BDT 1,000 / Free" />
           </FormField>
         </div>
-        <ImageUploadField
-          label="Event Banner / Poster"
-          value={image}
-          onChange={setImage}
-          helpText="Upload an event flyer/banner from your device or provide a link."
-        />
+        <FormField label="Registration Link">
+          <input type="url" value={registrationLink} onChange={(e) => setRegistrationLink(e.target.value)} className={inputClass} placeholder="https://..." />
+        </FormField>
       </FormModal>
 
       <ConfirmModal

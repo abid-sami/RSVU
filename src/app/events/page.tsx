@@ -98,9 +98,18 @@ export default function EventsPage() {
 
       {/* Filtered Events Grid */}
       {filteredEvents.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="flex flex-wrap justify-center gap-8">
           {filteredEvents.map((event) => (
-            <EventCard key={event.id} event={event} />
+            <div
+              key={event.id}
+              className={`w-full flex ${
+                filteredEvents.length === 1
+                  ? "max-w-xl"
+                  : "md:w-[calc(50%-16px)] max-w-xl"
+              }`}
+            >
+              <EventCard event={event} />
+            </div>
           ))}
         </div>
       ) : (

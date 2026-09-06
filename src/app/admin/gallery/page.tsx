@@ -7,12 +7,12 @@ import { FormModal, FormField, inputClass, selectClass } from "@/components/admi
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
 import { ConfirmModal } from "@/components/admin/ConfirmModal";
 import { EmptyState } from "@/components/admin/EmptyState";
-import { Plus, Search, Edit2, Trash2, ImageIcon, Tag } from "lucide-react";
+import { Plus, Search, Edit2, Trash2, ImageIcon, Tag, Pin } from "lucide-react";
 
 export default function AdminGalleryPage() {
   const {
     galleryImages, galleryCategories, addGalleryImage, updateGalleryImage,
-    deleteGalleryImage, addGalleryCategory, updateGalleryCategory, deleteGalleryCategory,
+    deleteGalleryImage, togglePinGalleryImage, addGalleryCategory, updateGalleryCategory, deleteGalleryCategory,
   } = useAdminData();
 
   const [search, setSearch] = useState("");
@@ -30,16 +30,17 @@ export default function AdminGalleryPage() {
   const [categoryId, setCategoryId] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [caption, setCaption] = useState("");
+  const [isPinned, setIsPinned] = useState(false);
 
   const resetForm = () => {
-    setTitle(""); setCategoryId(""); setImageUrl(""); setCaption(""); setEditing(null);
+    setTitle(""); setCategoryId(""); setImageUrl(""); setCaption(""); setIsPinned(false); setEditing(null);
   };
 
   const openAdd = () => { resetForm(); setFormOpen(true); };
 
   const openEdit = (img: AdminGalleryImage) => {
     setEditing(img); setTitle(img.title); setCategoryId(img.categoryId);
-    setImageUrl(img.image); setCaption(img.caption);
+    setImageUrl(img.image); setCaption(img.caption); setIsPinned(!!img.isPinned);
     setFormOpen(true);
   };
 
@@ -52,6 +53,7 @@ export default function AdminGalleryPage() {
       categoryName: cat?.name || "Uncategorized",
       image: imageUrl,
       caption,
+      isPinned,
     };
     if (editing) {
       updateGalleryImage(editing.id, data);
@@ -142,9 +144,15 @@ export default function AdminGalleryPage() {
               ))}
             </div>
           </div>
-          <button onClick={openAdd} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-cyan-950 text-sm font-semibold transition-colors shrink-0">
-            <Plus className="w-4 h-4" /> Add Image
-          </button>
+          <div className="flex items-center gap-3">
+            <div className="px-3 py-1.5 rounded-lg bg-slate-900 border border-cyan-500/30 text-xs font-mono text-cyan-400 flex items-center gap-1.5">
+              <Pin className="w-3.5 h-3.5 text-amber-400" />
+              <span>Pinned to Home: <strong>{galleryImages.filter(i => i.isPinned).length}/6</strong></span>
+            </div>
+            <button onClick={openAdd} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-cyan-950 text-sm font-semibold transition-colors shrink-0">
+              <Plus className="w-4 h-4" /> Add Image
+            </button>
+          </div>
         </div>
 
         {filtered.length === 0 ? (
@@ -156,6 +164,19 @@ export default function AdminGalleryPage() {
                 <div className="relative h-40 bg-slate-800">
                   <img src={img.image} alt={img.title} className="w-full h-full object-cover" />
                   <span className="absolute top-2 left-2 px-2 py-0.5 rounded bg-black/70 text-[10px] text-slate-300 font-mono">{img.categoryName}</span>
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); togglePinGalleryImage(img.id); }}
+                    title={img.isPinned ? "Pinned to Homepage (Click to unpin)" : "Click to pin to Homepage (Max 6)"}
+                    className={`absolute top-2 right-2 px-2 py-0.5 rounded text-[10px] font-mono flex items-center gap-1 transition-all backdrop-blur-md ${
+                      img.isPinned
+                        ? "bg-amber-500/85 text-white border border-amber-400/60 shadow-[0_0_10px_rgba(245,158,11,0.4)]"
+                        : "bg-black/60 text-slate-400 hover:text-white border border-slate-700 hover:border-slate-500"
+                    }`}
+                  >
+                    <Pin className={`w-3 h-3 ${img.isPinned ? "fill-white text-white" : ""}`} />
+                    <span>{img.isPinned ? "Pinned" : "Pin"}</span>
+                  </button>
                 </div>
                 <div className="p-3">
                   <h4 className="text-sm font-medium text-white truncate">{img.title}</h4>
@@ -190,6 +211,20 @@ export default function AdminGalleryPage() {
         />
 
         <FormField label="Caption"><input type="text" value={caption} onChange={(e) => setCaption(e.target.value)} className={inputClass} placeholder="Short description..." /></FormField>
+
+        <div className="flex items-center gap-2 pt-2">
+          <input
+            type="checkbox"
+            id="isPinned"
+            checked={isPinned}
+            onChange={(e) => setIsPinned(e.target.checked)}
+            className="w-4 h-4 rounded bg-slate-900 border-slate-700 text-cyan-500 focus:ring-cyan-400"
+          />
+          <label htmlFor="isPinned" className="text-xs font-mono text-slate-300 cursor-pointer flex items-center gap-1.5">
+            <Pin className="w-3.5 h-3.5 text-amber-400" />
+            <span>Pin to Homepage Activity Gallery (Max 6 images)</span>
+          </label>
+        </div>
       </FormModal>
 
       {/* Category Add/Edit Modal */}
