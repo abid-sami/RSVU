@@ -274,7 +274,7 @@ export const executiveMembers: ExecutiveMember[] = [
     designation: "Event Coordinator",
     roleType: "Management Team",
     department: "Department of Computer Science & Engineering",
-    avatar: "/default-avatar.png",
+    avatar: "/Committee/wadud.jpg",
     bio: "Executing on-ground logistics, participant guidance, and operational schedules during club events.",
     skills: ["Field Operations", "Participant Guidance", "Schedule Coordination"],
     links: {
