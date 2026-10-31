@@ -144,7 +144,7 @@ export const executiveMembers: ExecutiveMember[] = [
     designation: "Organizing Secretary",
     roleType: "Executive Panel",
     department: "Department of Computer Science & Engineering",
-    avatar: "/default-avatar.png",
+    avatar: "/Committee/sobuj.png",
     bio: "Organizing society symposiums, internal assemblies, championships, and member engagement.",
     skills: ["Event Planning", "Team Logistics", "Club Engagement"],
     links: {
