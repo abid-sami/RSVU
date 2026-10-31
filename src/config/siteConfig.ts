@@ -17,7 +17,7 @@ export const siteConfig = {
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://rsvu.vercel.app",
   ogImageUrl: "/og-image.jpg",
   // Google Search Console Verification Code (content="..." from your meta tag)
-  googleSiteVerification: "",
+  googleSiteVerification: "BlghWvxt9qmwDludErWzLo1YYvsAiMZakqqD96fExw8",
 
   stats: {
     yearsActive: "12+",
