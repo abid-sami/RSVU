@@ -559,7 +559,7 @@ export const executiveMembers: ExecutiveMember[] = [
     designation: "Media and Communication Secretary",
     roleType: "Management Team",
     department: "Department of Computer Science & Engineering",
-    avatar: "/default-avatar.png",
+    avatar: "/Committee/Jisan.jpg",
     bio: "Directing RSVU creative media, visual storytelling, broadcast production, and social branding.",
     skills: ["Media Production", "Content Curation", "Social Outreach"],
     links: {
