@@ -339,7 +339,7 @@ export const executiveMembers: ExecutiveMember[] = [
     designation: "Assistant Event Coordinator",
     roleType: "Management Team",
     department: "Department of Computer Science & Engineering",
-    avatar: "/default-avatar.png",
+    avatar: "/Committee/Pritha .jpg",
     bio: "Supporting event coordination, participant hospitality, and tournament arena logistics.",
     skills: ["Registration Desk", "Hospitality Services", "Session Coordination"],
     links: {
@@ -365,7 +365,7 @@ export const executiveMembers: ExecutiveMember[] = [
     designation: "Assistant Event Coordinator",
     roleType: "Management Team",
     department: "Department of Computer Science & Engineering",
-    avatar: "/Committee/Pritha .jpg",
+    avatar: "/default-avatar.png",
     bio: "Supporting event coordination, participant hospitality, and tournament arena logistics.",
     skills: ["Logistics Oversight", "Team Collaboration", "Desk Management"],
     links: {
@@ -546,7 +546,7 @@ export const executiveMembers: ExecutiveMember[] = [
     designation: "Media and Communication Secretary",
     roleType: "Management Team",
     department: "Department of Computer Science & Engineering",
-    avatar: "/Committee/Mehedi Hassan.JPG",
+    avatar: "/Committee/Mehedi Hassan.jpeg",
     bio: "Directing RSVU creative media, visual storytelling, broadcast production, and social branding.",
     skills: ["Digital Media", "Creative Direction", "Visual Communication"],
     links: {
