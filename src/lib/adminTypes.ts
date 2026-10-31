@@ -25,6 +25,7 @@ export interface AdminBorrowing {
   section: string; // A–G
   componentId: string;
   componentName: string;
+  quantity: number;
   givenDate: string;
   returnedDate?: string;
   status: BorrowingStatus;

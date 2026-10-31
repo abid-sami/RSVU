@@ -21,7 +21,7 @@ const pageTitles: Record<string, string> = {
 };
 
 function AdminLayoutInner({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, logout } = useAdminAuth();
+  const { isAuthenticated, logout, role, canAccess } = useAdminAuth();
   const router = useRouter();
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -32,11 +32,21 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
     setMounted(true);
   }, []);
 
+  // Redirect to login if not authenticated
   useEffect(() => {
     if (mounted && !isAuthenticated && pathname !== "/admin/login") {
       router.replace("/admin/login");
     }
   }, [mounted, isAuthenticated, pathname, router]);
+
+  // Enforce Role-Based Access Control (RBAC)
+  useEffect(() => {
+    if (mounted && isAuthenticated && role === "inventory_manager") {
+      if (pathname !== "/admin/components" && pathname !== "/admin/borrowings") {
+        router.replace("/admin/components");
+      }
+    }
+  }, [mounted, isAuthenticated, role, pathname, router]);
 
   // Login page — render without sidebar
   if (pathname === "/admin/login") {
@@ -48,6 +58,18 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
     return (
       <div className="min-h-screen bg-[#060a10] flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  // If role is inventory_manager and attempting unauthorized route, prevent render
+  if (role === "inventory_manager" && pathname !== "/admin/components" && pathname !== "/admin/borrowings") {
+    return (
+      <div className="min-h-screen bg-[#060a10] flex items-center justify-center">
+        <div className="text-center space-y-3">
+          <div className="w-8 h-8 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-xs text-slate-400 font-mono">Redirecting to authorized hardware sections...</p>
+        </div>
       </div>
     );
   }

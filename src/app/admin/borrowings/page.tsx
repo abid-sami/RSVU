@@ -5,7 +5,7 @@ import { useAdminData } from "@/contexts/AdminDataContext";
 import { FormField, inputClass, selectClass } from "@/components/admin/FormModal";
 import { ConfirmModal } from "@/components/admin/ConfirmModal";
 import { EmptyState } from "@/components/admin/EmptyState";
-import { ArrowLeftRight, Plus, RotateCcw, Package } from "lucide-react";
+import { ArrowLeftRight, Plus, RotateCcw, Package, Search } from "lucide-react";
 
 const SEMESTERS = ["1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th"];
 const SECTIONS = ["A", "B", "C", "D", "E", "F", "G"];
@@ -23,12 +23,14 @@ export default function AdminBorrowingsPage() {
   const [semester, setSemester] = useState(1);
   const [section, setSection] = useState("A");
   const [componentId, setComponentId] = useState("");
+  const [quantity, setQuantity] = useState(1);
   const [givenDate, setGivenDate] = useState(new Date().toISOString().split("T")[0]);
 
   const activeBorrowings = borrowings.filter((b) => b.status === "borrowed");
   const historyBorrowings = borrowings.filter((b) => b.status === "returned");
 
   const availableComponents = components.filter((c) => c.availableQuantity > 0);
+  const selectedComp = components.find((c) => c.id === componentId);
 
   const handleGive = (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,6 +44,7 @@ export default function AdminBorrowingsPage() {
       section,
       componentId,
       componentName: comp.name,
+      quantity,
       givenDate,
     });
 
@@ -51,6 +54,7 @@ export default function AdminBorrowingsPage() {
     setSemester(1);
     setSection("A");
     setComponentId("");
+    setQuantity(1);
     setGivenDate(new Date().toISOString().split("T")[0]);
     setActiveTab("active");
   };
@@ -121,17 +125,56 @@ export default function AdminBorrowingsPage() {
                   </select>
                 </FormField>
               </div>
-              <FormField label="Component" required>
-                <select value={componentId} onChange={(e) => setComponentId(e.target.value)} required className={selectClass}>
-                  <option value="">Select a component...</option>
-                  {availableComponents.map((c) => (
-                    <option key={c.id} value={c.id}>{c.name} (Available: {c.availableQuantity})</option>
-                  ))}
-                </select>
-                {components.length === 0 && (
-                  <p className="text-xs text-amber-400 mt-1">No components added yet. Add components first.</p>
-                )}
-              </FormField>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="sm:col-span-2">
+                  <FormField label="Component" required>
+                    <div className="relative">
+                      <select
+                        value={componentId}
+                        onChange={(e) => {
+                          setComponentId(e.target.value);
+                          setQuantity(1);
+                        }}
+                        required
+                        className={`${selectClass} pr-10 appearance-none cursor-pointer`}
+                      >
+                        <option value="">Select a component...</option>
+                        {availableComponents.map((c) => (
+                          <option key={c.id} value={c.id}>
+                            {c.name} (Available: {c.availableQuantity})
+                          </option>
+                        ))}
+                      </select>
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                        <Search className="w-4 h-4" />
+                      </div>
+                    </div>
+                    {components.length === 0 && (
+                      <p className="text-xs text-amber-400 mt-1">No components added yet. Add components first.</p>
+                    )}
+                  </FormField>
+                </div>
+
+                <div>
+                  <FormField label="Quantity" required>
+                    <select
+                      value={quantity}
+                      onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                      className={selectClass}
+                      disabled={!componentId}
+                    >
+                      {Array.from(
+                        { length: Math.min(Math.max(selectedComp?.availableQuantity || 1, 1), 100) },
+                        (_, i) => i + 1
+                      ).map((q) => (
+                        <option key={q} value={q}>
+                          {q}
+                        </option>
+                      ))}
+                    </select>
+                  </FormField>
+                </div>
+              </div>
               <FormField label="Given Date" required>
                 <input type="date" value={givenDate} onChange={(e) => setGivenDate(e.target.value)} required className={inputClass} />
               </FormField>
@@ -165,6 +208,7 @@ export default function AdminBorrowingsPage() {
                     <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">ID</th>
                     <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Sem/Sec</th>
                     <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Component</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Qty</th>
                     <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Given Date</th>
                     <th className="text-right px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Action</th>
                   </tr>
@@ -176,6 +220,7 @@ export default function AdminBorrowingsPage() {
                       <td className="px-4 py-3 text-slate-400 font-mono text-xs">{b.studentId}</td>
                       <td className="px-4 py-3 text-slate-300">{b.semester}/{b.section}</td>
                       <td className="px-4 py-3 text-slate-300">{b.componentName}</td>
+                      <td className="px-4 py-3 text-cyan-400 font-mono font-semibold">{b.quantity || 1}</td>
                       <td className="px-4 py-3 text-slate-400">{b.givenDate}</td>
                       <td className="px-4 py-3 text-right">
                         <button
@@ -212,6 +257,7 @@ export default function AdminBorrowingsPage() {
                     <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Student</th>
                     <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">ID</th>
                     <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Component</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Qty</th>
                     <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Given Date</th>
                     <th className="text-left px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wider">Returned Date</th>
                   </tr>
@@ -222,6 +268,7 @@ export default function AdminBorrowingsPage() {
                       <td className="px-4 py-3 text-slate-200">{b.borrowerName}</td>
                       <td className="px-4 py-3 text-slate-400 font-mono text-xs">{b.studentId}</td>
                       <td className="px-4 py-3 text-slate-300">{b.componentName}</td>
+                      <td className="px-4 py-3 text-slate-300 font-mono">{b.quantity || 1}</td>
                       <td className="px-4 py-3 text-slate-400">{b.givenDate}</td>
                       <td className="px-4 py-3 text-emerald-400">{b.returnedDate ? new Date(b.returnedDate).toLocaleDateString() : "-"}</td>
                     </tr>

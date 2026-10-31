@@ -9,61 +9,161 @@ export interface TargetGoal {
   statusPercent: number;
 }
 
+export interface GoalItem {
+  id: string;
+  num: string;
+  title: string;
+  description: string;
+  badge: string;
+}
+
+export interface ActivityItem {
+  id: string;
+  num: string;
+  title: string;
+  description: string;
+  badge: string;
+}
+
+export const clubGoals: string[] = [
+  "To inspire innovation and creativity in the field of robotics.",
+  "To provide hands-on experience with robotics design, development, and programming.",
+  "To prepare students for robotics competitions at national and international levels.",
+  "To promote interdisciplinary collaboration among students interested in robotics, AI, and electronics.",
+];
+
+export const clubActivities: string[] = [
+  "Organizes workshops and training sessions on robotics, IoT, and embedded systems.",
+  "Conducts hands-on projects to build and program robots.",
+  "Hosts intra-university robotics competitions and exhibitions.",
+  "Encourages participation in national and international robotics contests.",
+  "Facilitates collaboration and mentorship among students for research and innovation in robotics.",
+];
+
+export const structuredGoals: GoalItem[] = [
+  {
+    id: "goal-1",
+    num: "01",
+    title: "Inspire Innovation & Creativity",
+    description: "To inspire innovation and creativity in the field of robotics.",
+    badge: "CREATIVITY",
+  },
+  {
+    id: "goal-2",
+    num: "02",
+    title: "Hands-on Design & Programming",
+    description: "To provide hands-on experience with robotics design, development, and programming.",
+    badge: "ENGINEERING",
+  },
+  {
+    id: "goal-3",
+    num: "03",
+    title: "National & Global Arenas",
+    description: "To prepare students for robotics competitions at national and international levels.",
+    badge: "COMPETITIONS",
+  },
+  {
+    id: "goal-4",
+    num: "04",
+    title: "Interdisciplinary Synergy",
+    description: "To promote interdisciplinary collaboration among students interested in robotics, AI, and electronics.",
+    badge: "COLLABORATION",
+  },
+];
+
+export const structuredActivities: ActivityItem[] = [
+  {
+    id: "act-1",
+    num: "01",
+    title: "Robotics, IoT & Embedded Workshops",
+    description: "Organizes workshops and training sessions on robotics, IoT, and embedded systems.",
+    badge: "TRAINING",
+  },
+  {
+    id: "act-2",
+    num: "02",
+    title: "Hands-on Robot Building & R&D",
+    description: "Conducts hands-on projects to build and program robots.",
+    badge: "PROTOTYPING",
+  },
+  {
+    id: "act-3",
+    num: "03",
+    title: "Intra-University Battles & Expos",
+    description: "Hosts intra-university robotics competitions and exhibitions.",
+    badge: "EXHIBITIONS",
+  },
+  {
+    id: "act-4",
+    num: "04",
+    title: "Championship Tournaments & Contests",
+    description: "Encourages participation in national and international robotics contests.",
+    badge: "TOURNAMENTS",
+  },
+  {
+    id: "act-5",
+    num: "05",
+    title: "Collaborative Research & Mentorship",
+    description: "Facilitates collaboration and mentorship among students for research and innovation in robotics.",
+    badge: "MENTORSHIP",
+  },
+];
+
 export const clubTargets: TargetGoal[] = [
   {
     id: "target-1",
-    milestone: "2026 Q3",
+    milestone: "Core Target",
     phase: "Current Priority",
-    title: "Autonomous Campus Delivery Rover Prototype (V-Rover)",
+    title: "Robotics Design, Prototyping & Programming",
     category: "Research",
-    description: "Developing a fully autonomous 4-wheel differential rover capable of indoor/outdoor waypoint navigation across Varendra University permanent campus using GPS, LiDAR SLAM, and computer vision.",
+    description: "Equipping university students with hands-on experience in robotic hardware design, CAD modeling, circuit fabrication, sensor telemetry, and embedded software programming.",
     targets: [
-      "Finalize rugged outdoor aluminum chassis & suspension",
-      "Deploy ROS 2 Humble Nav2 waypoint navigation stack",
-      "Achieve real-time dynamic pedestrian avoidance at 1.5 m/s",
+      "To inspire innovation and creativity in the field of robotics.",
+      "To provide hands-on experience with robotics design, development, and programming.",
+      "Conducts hands-on projects to build and program robots.",
     ],
-    statusPercent: 70,
+    statusPercent: 85,
   },
   {
     id: "target-2",
-    milestone: "2026 Q4",
-    phase: "Phase 2 (2026 Q3-Q4)",
-    title: "University Robotic Hardware Bank & MakerSpace Expansion",
-    category: "Infrastructure",
-    description: "Expanding the RSVU Hardware Bank to over 150+ loanable microcontroller boards, high-power drivers, and precision optical sensors for all engineering students.",
+    milestone: "Championship Squads",
+    phase: "Current Priority",
+    title: "National & International Robotics Contests",
+    category: "Competition",
+    description: "Training competitive squads for high-speed line followers, autonomous combat rovers, robo-soccer, and regional championship arenas across Bangladesh and abroad.",
     targets: [
-      "Acquire dual SLA 3D printers and high-speed CNC PCB milling machine",
-      "Implement RFID-based automated equipment borrowing checkout kiosk",
-      "Secure industrial component sponsorship with leading hardware manufacturers",
+      "To prepare students for robotics competitions at national and international levels.",
+      "Hosts intra-university robotics competitions and exhibitions.",
+      "Encourages participation in national and international robotics contests.",
     ],
-    statusPercent: 55,
+    statusPercent: 75,
   },
   {
     id: "target-3",
-    milestone: "2027 Q1",
-    phase: "Phase 3 (2027)",
-    title: "International Robotics Contest Delegation (RoboGames / FIRA)",
-    category: "Competition",
-    description: "Sending our premier national championship squad to represent Varendra University and Bangladesh at renowned international robotics challenges in Southeast Asia.",
+    milestone: "Hands-on Bootcamps",
+    phase: "Current Priority",
+    title: "Workshops in Robotics, IoT & Embedded Systems",
+    category: "Community Outreach",
+    description: "Hosting structured skill-building workshops, beginner microcontroller training, IoT networking labs, and practical hardware design masterclasses.",
     targets: [
-      "Design 30kg combat-weight pneumatic flipper bot",
-      "Fine-tune ultra-high-speed magnetic downforce Line Follower bot (<10ms cycle)",
-      "Publish peer-reviewed conference paper on multi-robot swarm localization",
+      "Organizes workshops and training sessions on robotics, IoT, and embedded systems.",
+      "Conducts hands-on projects to build and program robots.",
+      "Hands-on sensor calibration and micro-step motor tuning masterclasses.",
     ],
-    statusPercent: 40,
+    statusPercent: 90,
   },
   {
     id: "target-4",
-    milestone: "Continuous",
+    milestone: "Innovation Vanguard",
     phase: "Current Priority",
-    title: "Rajshahi Regional High-School STEM & Robotics Initiative",
-    category: "Community Outreach",
-    description: "Democratizing hardware knowledge across colleges and schools in Rajshahi Division with free basic Arduino, sensor, and coding workshops.",
+    title: "Interdisciplinary Collaboration & Research Mentorship",
+    category: "Research",
+    description: "Fostering collaboration between CSE, EEE, and engineering disciplines, pairing senior mentors and faculty advisors with student innovation teams.",
     targets: [
-      "Conduct workshops across 12 regional schools and polytechnic institutes",
-      "Distribute 50+ free beginner micro-robotics kits",
-      "Host the Northern Bangladesh Junior Robotics Exhibition",
+      "To promote interdisciplinary collaboration among students interested in robotics, AI, and electronics.",
+      "Facilitates collaboration and mentorship among students for research and innovation in robotics.",
+      "Bridging autonomous hardware with robotics AI and research innovation.",
     ],
-    statusPercent: 85,
+    statusPercent: 80,
   },
 ];

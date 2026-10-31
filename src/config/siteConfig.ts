@@ -31,18 +31,18 @@ export const siteConfig = {
   },
 
   contact: {
-    email: "robotics@vu.edu.bd",
+    email: "prs.rsvu4@gmail.com",
     altEmail: "rsvu.robotics.society@gmail.com",
-    phone: "+880 1711-234567",
+    phone: "+880 1734-445665",
     address: "Kharkhari Bypass Road, Chandrima, Rajshahi-6204, Bangladesh",
     labLocation: "Robotics Club, Room 102, Ground Floor",
   },
 
   socials: {
-    facebook: "https://facebook.com/rsvu.robotics",
-    linkedin: "https://linkedin.com/company/rsvu-robotics",
-    github: "https://github.com/rsvu-robotics",
-    youtube: "https://youtube.com/@rsvu-robotics",
+    facebook: "https://www.facebook.com/robotics.society.vu",
+    linkedin: "/",
+    github: "/",
+    youtube: "/",
   },
 
   navLinks: [

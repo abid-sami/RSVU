@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { siteConfig } from "@/config/siteConfig";
 import { advisorsList } from "@/data/membersData";
+import { clubGoals, clubActivities } from "@/data/targetData";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import {
   Compass,
@@ -19,6 +20,7 @@ import {
   ChevronRight,
   MapPin,
   CheckCircle2,
+  Activity,
 } from "lucide-react";
 import type { Metadata } from "next";
 
@@ -134,6 +136,76 @@ export default function AboutPage() {
         </div>
       </div>
 
+      {/* Goals, Targets & Key Activities Section */}
+      <div className="mb-20">
+        <SectionHeading
+          badge="STRATEGIC DIRECTION"
+          title="OUR GOALS, TARGETS &"
+          highlightText="KEY ACTIVITIES"
+          subtitle="Our core objectives for technical excellence and the continuous initiatives driving our robotics community forward."
+        />
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Card 1: Goals and Targets */}
+          <div className="cyber-panel cyber-corner rounded-2xl p-8 sm:p-10 border border-cyan-500/30 flex flex-col justify-between">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 font-mono text-xs uppercase tracking-wider mb-4">
+                <Target className="w-3.5 h-3.5 text-cyan-400" />
+                <span>STRATEGIC OBJECTIVES</span>
+              </div>
+              <h3 className="font-tech text-2xl sm:text-3xl font-black text-white italic tracking-wide uppercase">
+                OUR GOALS & <span className="text-cyan-400">TARGETS</span>
+              </h3>
+              <div className="w-16 h-1 bg-cyan-400 my-4"></div>
+              <p className="text-slate-300 text-sm mb-6 leading-relaxed">
+                Empowering university engineers with practical mastery, pioneering research, and competitive excellence across robotics and intelligent hardware.
+              </p>
+
+              <div className="space-y-3.5">
+                {clubGoals.map((goal, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-start gap-3 p-3.5 rounded-xl bg-slate-900/60 border border-slate-800/80 hover:border-cyan-500/40 transition-all group"
+                  >
+                    <CheckCircle2 className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
+                    <span className="text-slate-200 text-sm font-sans leading-relaxed">{goal}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Card 2: Key Activities */}
+          <div className="cyber-panel cyber-corner rounded-2xl p-8 sm:p-10 border border-cyan-500/30 flex flex-col justify-between">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 font-mono text-xs uppercase tracking-wider mb-4">
+                <Activity className="w-3.5 h-3.5 text-cyan-400" />
+                <span>SOCIETY INITIATIVES</span>
+              </div>
+              <h3 className="font-tech text-2xl sm:text-3xl font-black text-white italic tracking-wide uppercase">
+                WHAT WE <span className="text-cyan-400">DO</span>
+              </h3>
+              <div className="w-16 h-1 bg-cyan-400 my-4"></div>
+              <p className="text-slate-300 text-sm mb-6 leading-relaxed">
+                Hands-on training, regular intra-university exhibitions, national tournament squads, and active collaborative development sessions.
+              </p>
+
+              <div className="space-y-3.5">
+                {clubActivities.map((act, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-start gap-3 p-3.5 rounded-xl bg-slate-900/60 border border-slate-800/80 hover:border-cyan-500/40 transition-all group"
+                  >
+                    <CheckCircle2 className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
+                    <span className="text-slate-200 text-sm font-sans leading-relaxed">{act}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Historical Milestones Timeline */}
       <div className="mb-20">
         <SectionHeading
@@ -170,64 +242,6 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Faculty Advisors Section */}
-      <div className="mb-20">
-        <SectionHeading
-          badge="ACADEMIC PATRONAGE"
-          title="FACULTY ADVISORS &"
-          highlightText="MENTORS"
-          subtitle="Distinguished university professors who provide academic oversight, laboratory grants, and technical validation."
-        />
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          {advisorsList.map((adv) => (
-            <div
-              key={adv.id}
-              className="cyber-panel rounded-2xl p-8 border border-cyan-500/20 hover:border-cyan-400/50 flex flex-col sm:flex-row items-center sm:items-start gap-6 transition-all group"
-            >
-              <div
-                className="relative w-24 sm:w-28 aspect-[3/4] rounded-xl overflow-hidden shrink-0 border-2 border-cyan-500/40 group-hover:border-cyan-400 bg-slate-950"
-                style={{ aspectRatio: "3 / 4" }}
-              >
-                <div className="pt-[133.33%] w-full pointer-events-none" />
-                <Image
-                  src={adv.avatar}
-                  alt={adv.name}
-                  fill
-                  sizes="120px"
-                  className="absolute inset-0 w-full h-full object-cover object-top"
-                />
-              </div>
-
-              <div className="text-center sm:text-left space-y-2">
-                <h4 className="font-tech text-xl font-bold text-white uppercase italic tracking-wide group-hover:text-cyan-300 transition-colors">
-                  {adv.name}
-                </h4>
-                <p className="text-xs font-mono text-cyan-400 font-semibold">
-                  {adv.designation}
-                </p>
-                <p className="text-xs text-slate-400 font-mono">
-                  {adv.department}
-                </p>
-                <p className="text-xs text-slate-300 font-sans pt-2 leading-relaxed">
-                  {adv.bio}
-                </p>
-
-                <div className="pt-3 flex flex-wrap gap-1.5 justify-center sm:justify-start">
-                  {adv.skills.map((skill, idx) => (
-                    <span
-                      key={idx}
-                      className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/20"
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
 
       {/* Navigation CTA */}
       <div className="text-center pt-8 border-t border-cyan-500/15">
@@ -235,7 +249,7 @@ export default function AboutPage() {
           href="/members"
           className="inline-flex items-center gap-2 px-8 py-3.5 rounded-lg bg-cyan-400 hover:bg-cyan-300 text-cyan-950 font-tech font-bold text-sm tracking-wider uppercase italic transition-all shadow-[0_0_20px_rgba(0,240,255,0.4)]"
         >
-          <span>MEET THE COMPLETE EXECUTIVE COMMITTEE</span>
+          <span>MEET THE EXECUTIVE COMMITTEE</span>
           <ChevronRight className="w-4 h-4" />
         </Link>
       </div>

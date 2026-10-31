@@ -28,7 +28,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
               ? "bg-slate-800/60 text-slate-400 border border-slate-700/60"
               : isRegOpen
               ? "bg-cyan-500/15 text-cyan-300 border border-cyan-400/40 shadow-[0_0_10px_rgba(0,240,255,0.15)]"
-              : "bg-red-500/15 text-red-300 border border-red-500/30"
+              : "bg-amber-500/15 text-amber-300 border border-amber-500/40"
           }`}
         >
           {isUpcoming && isRegOpen && (
@@ -37,7 +37,14 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
               <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
             </span>
           )}
-          {!isUpcoming ? "Archived" : isRegOpen ? "Registration Open" : "Registration Closed"}
+          {isUpcoming && !isRegOpen && (
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+          )}
+          {!isUpcoming
+            ? "Archived"
+            : isRegOpen
+            ? "Registration Open"
+            : (event.registrationStatusText || "Announcing Soon")}
         </span>
       </div>
 
@@ -69,23 +76,30 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
         <div className="space-y-2.5 pt-4 border-t border-cyan-500/15 text-xs text-slate-400 font-mono">
           <div className="flex items-center gap-2">
             <Calendar className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-            <span className="text-slate-300">{event.date} {event.time ? `• ${event.time}` : ""}</span>
+            <span className="text-slate-300">
+              Date: <span className={event.date.includes("TBA") || event.date.includes("To Be Announced") ? "text-amber-300/90 font-medium" : "text-slate-200"}>{event.date}</span>
+              {event.time && event.time !== "TBA" ? ` • ${event.time}` : ""}
+            </span>
           </div>
           <div className="flex items-center gap-2">
             <MapPin className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-            <span className="truncate text-slate-300">{event.venue}</span>
+            <span className="truncate text-slate-300">
+              Venue: <span className={event.venue.includes("TBA") || event.venue.includes("To Be Announced") ? "text-amber-300/90 font-medium" : "text-slate-200"}>{event.venue}</span>
+            </span>
           </div>
           {event.teamSize && (
             <div className="flex items-center gap-2">
               <Users className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-              <span className="text-slate-300">Squad: {event.teamSize}</span>
+              <span className="text-slate-300">
+                Squad: <span className={event.teamSize.includes("TBA") || event.teamSize.includes("To Be Announced") ? "text-amber-300/90 font-medium" : "text-slate-200"}>{event.teamSize}</span>
+              </span>
             </div>
           )}
           {event.fee && (
             <div className="flex items-center gap-2">
               <Banknote className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
               <span className="text-slate-300">
-                Registration Fee: <span className="text-emerald-400 font-semibold">{event.fee}</span>
+                Registration Fee: <span className={event.fee.includes("TBA") || event.fee.includes("To Be Announced") ? "text-amber-300/90 font-semibold" : "text-emerald-400 font-semibold"}>{event.fee}</span>
               </span>
             </div>
           )}
@@ -104,8 +118,8 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
               <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
             </Link>
           ) : (
-            <div className="w-full py-2.5 px-4 rounded-lg bg-slate-900/60 border border-slate-800 text-slate-500 font-mono text-xs uppercase text-center font-bold tracking-wider">
-              REGISTRATION CLOSED
+            <div className="w-full py-2.5 px-4 rounded-lg bg-slate-900/80 border border-cyan-500/20 text-cyan-400 font-mono text-xs uppercase text-center font-bold tracking-wider">
+              {event.registrationCtaText || "DETAILS ANNOUNCING SOON"}
             </div>
           )
         ) : (

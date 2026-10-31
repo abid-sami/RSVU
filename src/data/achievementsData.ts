@@ -14,10 +14,10 @@ export interface AchievementItem {
 }
 
 export const achievementStats = [
-  { value: "12+", label: "National Awards Won", suffix: "Podiums" },
-  { value: "35+", label: "LFR & Robo Soccer Bots Built", suffix: "Prototypes" },
-  { value: "450+", label: "Students Trained in Robotics", suffix: "Alumni" },
-  { value: "12+", label: "Years of Continuous Excellence", suffix: "Since 2014" },
+  { value: "N/A", label: "National Awards Won", suffix: "Podiums" },
+  { value: "N/A", label: "LFR & Robo Soccer Bots Built", suffix: "Prototypes" },
+  { value: "N/A", label: "Students Trained in Robotics", suffix: "Alumni" },
+  { value: "N/A", label: "Years of Continuous Excellence", suffix: "Since 2014" },
 ];
 
 export const achievementsList: AchievementItem[] = [

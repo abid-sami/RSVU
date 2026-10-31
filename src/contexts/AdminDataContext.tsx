@@ -26,7 +26,7 @@ const KEYS = {
   events: "rsvu_admin_events",
   members: "rsvu_admin_members",
   achievements: "rsvu_admin_achievements",
-  galleryImages: "rsvu_admin_gallery_images",
+  galleryImages: "rsvu_admin_gallery_images_v2",
   galleryCategories: "rsvu_admin_gallery_categories",
   countdown: "rsvu_admin_countdown",
 };
@@ -159,7 +159,7 @@ export function AdminDataProvider({ children }: { children: React.ReactNode }) {
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Load from localStorage on mount
+  // Load from localStorage on mount and sync components from MongoDB
   useEffect(() => {
     setComponents(getFromStorage<AdminComponent>(KEYS.components, []));
     setBorrowings(getFromStorage<AdminBorrowing>(KEYS.borrowings, []));
@@ -169,6 +169,50 @@ export function AdminDataProvider({ children }: { children: React.ReactNode }) {
     setGalleryImages(getFromStorage<AdminGalleryImage>(KEYS.galleryImages, DEFAULT_GALLERY_IMAGES));
     setGalleryCategories(getFromStorage<AdminGalleryCategory>(KEYS.galleryCategories, DEFAULT_GALLERY_CATEGORIES));
     setCountdown(getObjectFromStorage<AdminCountdown>(KEYS.countdown, DEFAULT_COUNTDOWN));
+
+    // Fetch live components from MongoDB
+    fetch("/api/components")
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.success && Array.isArray(res.data) && res.data.length > 0) {
+          const mapped: AdminComponent[] = res.data.map((item: any) => ({
+            id: item._id || item.id,
+            name: item.name,
+            category: item.category,
+            image: item.image || "",
+            quantity: item.quantity,
+            availableQuantity: item.availableQuantity ?? item.quantity,
+            createdAt: item.createdAt || new Date().toISOString(),
+          }));
+          setComponents(mapped);
+          saveToStorage(KEYS.components, mapped);
+        }
+      })
+      .catch((err) => console.log("Using local/cached components:", err));
+
+    // Fetch live borrowings from MongoDB
+    fetch("/api/borrowings")
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.success && Array.isArray(res.data)) {
+          const mapped: AdminBorrowing[] = res.data.map((item: any) => ({
+            id: item._id || item.id,
+            borrowerName: item.borrowerName,
+            studentId: item.studentId,
+            semester: item.semester,
+            section: item.section,
+            componentId: item.componentId,
+            componentName: item.componentName,
+            quantity: item.quantity || 1,
+            givenDate: item.givenDate,
+            returnedDate: item.returnedDate,
+            status: item.status,
+          }));
+          setBorrowings(mapped);
+          saveToStorage(KEYS.borrowings, mapped);
+        }
+      })
+      .catch((err) => console.log("Using local/cached borrowings:", err));
   }, []);
 
   // Toast helpers
@@ -180,20 +224,47 @@ export function AdminDataProvider({ children }: { children: React.ReactNode }) {
 
   const clearToast = useCallback(() => setToast(null), []);
 
-  // ---- Components CRUD ----
+  // ---- Components CRUD (Optimistic Local + MongoDB Sync) ----
   const addComponent = useCallback((data: Omit<AdminComponent, "id" | "createdAt" | "availableQuantity">) => {
+    const tempId = generateId();
+    const item: AdminComponent = {
+      ...data,
+      id: tempId,
+      availableQuantity: data.quantity,
+      createdAt: new Date().toISOString(),
+    };
+
     setComponents((prev) => {
-      const item: AdminComponent = {
-        ...data,
-        id: generateId(),
-        availableQuantity: data.quantity,
-        createdAt: new Date().toISOString(),
-      };
       const next = [...prev, item];
       saveToStorage(KEYS.components, next);
       return next;
     });
     showToast("Component added successfully", "success");
+
+    // Sync to MongoDB
+    fetch("/api/components", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: data.name,
+        category: data.category,
+        image: data.image,
+        quantity: data.quantity,
+        availableQuantity: data.quantity,
+      }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.success && res.data) {
+          const realId = res.data._id || res.data.id;
+          setComponents((prev) => {
+            const next = prev.map((c) => (c.id === tempId ? { ...c, id: realId } : c));
+            saveToStorage(KEYS.components, next);
+            return next;
+          });
+        }
+      })
+      .catch((err) => console.error("Error creating component in MongoDB:", err));
   }, [showToast]);
 
   const updateComponent = useCallback((id: string, data: Partial<AdminComponent>) => {
@@ -203,6 +274,13 @@ export function AdminDataProvider({ children }: { children: React.ReactNode }) {
       return next;
     });
     showToast("Component updated successfully", "success");
+
+    // Sync to MongoDB
+    fetch(`/api/components/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    }).catch((err) => console.error("Error updating component in MongoDB:", err));
   }, [showToast]);
 
   const deleteComponent = useCallback((id: string) => {
@@ -212,36 +290,65 @@ export function AdminDataProvider({ children }: { children: React.ReactNode }) {
       return next;
     });
     showToast("Component deleted", "success");
+
+    // Sync to MongoDB
+    fetch(`/api/components/${id}`, {
+      method: "DELETE",
+    }).catch((err) => console.error("Error deleting component in MongoDB:", err));
   }, [showToast]);
 
-  // ---- Borrowings ----
+  // ---- Borrowings (Optimistic Local + MongoDB Sync) ----
   const addBorrowing = useCallback((data: Omit<AdminBorrowing, "id" | "status" | "returnedDate">) => {
-    const borrowing: AdminBorrowing = { ...data, id: generateId(), status: "borrowed" };
+    const tempId = generateId();
+    const qty = data.quantity || 1;
+    const borrowing: AdminBorrowing = { ...data, quantity: qty, id: tempId, status: "borrowed" };
     setBorrowings((prev) => {
       const next = [...prev, borrowing];
       saveToStorage(KEYS.borrowings, next);
       return next;
     });
-    // Decrement available quantity
+    // Decrement available quantity locally
     setComponents((prev) => {
       const next = prev.map((c) =>
         c.id === data.componentId
-          ? { ...c, availableQuantity: Math.max(0, c.availableQuantity - 1) }
+          ? { ...c, availableQuantity: Math.max(0, c.availableQuantity - qty) }
           : c
       );
       saveToStorage(KEYS.components, next);
       return next;
     });
     showToast("Component given successfully", "success");
+
+    // Sync checkout to MongoDB
+    fetch("/api/borrowings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...data, quantity: qty }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.success && res.data) {
+          const realId = res.data._id || res.data.id;
+          setBorrowings((prev) => {
+            const next = prev.map((b) => (b.id === tempId ? { ...b, id: realId } : b));
+            saveToStorage(KEYS.borrowings, next);
+            return next;
+          });
+        }
+      })
+      .catch((err) => console.error("Error logging borrowing in MongoDB:", err));
   }, [showToast]);
 
   const returnBorrowing = useCallback((id: string) => {
     let componentId = "";
+    let returnedQty = 1;
+    const returnedDate = new Date().toISOString().split("T")[0];
     setBorrowings((prev) => {
       const next = prev.map((b) => {
         if (b.id === id) {
           componentId = b.componentId;
-          return { ...b, status: "returned" as const, returnedDate: new Date().toISOString() };
+          returnedQty = b.quantity || 1;
+          return { ...b, status: "returned" as const, returnedDate };
         }
         return b;
       });
@@ -252,14 +359,21 @@ export function AdminDataProvider({ children }: { children: React.ReactNode }) {
       setComponents((prev) => {
         const next = prev.map((c) =>
           c.id === componentId
-            ? { ...c, availableQuantity: Math.min(c.quantity, c.availableQuantity + 1) }
+            ? { ...c, availableQuantity: Math.min(c.quantity, c.availableQuantity + returnedQty) }
             : c
         );
         saveToStorage(KEYS.components, next);
         return next;
       });
     }
-    showToast("Component returned successfully", "success");
+    showToast("Component marked as returned", "success");
+
+    // Sync return to MongoDB
+    fetch(`/api/borrowings/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: "returned", returnedDate }),
+    }).catch((err) => console.error("Error updating return in MongoDB:", err));
   }, [showToast]);
 
   // ---- Events CRUD ----

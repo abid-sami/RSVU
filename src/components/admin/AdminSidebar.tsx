@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useAdminAuth } from "@/contexts/AdminAuthContext";
 import {
   Home,
   LayoutDashboard,
@@ -15,17 +16,18 @@ import {
   LogOut,
   X,
   ChevronRight,
+  ShieldCheck,
 } from "lucide-react";
 
-const navItems = [
-  { label: "Home", href: "/", icon: Home },
-  { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
-  { label: "Components", href: "/admin/components", icon: Cpu },
-  { label: "Borrowings", href: "/admin/borrowings", icon: ArrowLeftRight },
-  { label: "Events", href: "/admin/events", icon: CalendarDays },
-  { label: "Members", href: "/admin/members", icon: Users },
-  { label: "Achievements", href: "/admin/achievements", icon: Trophy },
-  { label: "Gallery", href: "/admin/gallery", icon: ImageIcon },
+const allNavItems = [
+  { label: "Home", href: "/", icon: Home, roles: ["admin", "inventory_manager"] },
+  { label: "Dashboard", href: "/admin", icon: LayoutDashboard, roles: ["admin"] },
+  { label: "Components", href: "/admin/components", icon: Cpu, roles: ["admin", "inventory_manager"] },
+  { label: "Borrowings", href: "/admin/borrowings", icon: ArrowLeftRight, roles: ["admin", "inventory_manager"] },
+  { label: "Events", href: "/admin/events", icon: CalendarDays, roles: ["admin"] },
+  { label: "Members", href: "/admin/members", icon: Users, roles: ["admin"] },
+  { label: "Achievements", href: "/admin/achievements", icon: Trophy, roles: ["admin"] },
+  { label: "Gallery", href: "/admin/gallery", icon: ImageIcon, roles: ["admin"] },
 ];
 
 interface AdminSidebarProps {
@@ -36,6 +38,14 @@ interface AdminSidebarProps {
 
 export const AdminSidebar: React.FC<AdminSidebarProps> = ({ isOpen, onClose, onLogout }) => {
   const pathname = usePathname();
+  const { role, user } = useAdminAuth();
+
+  const isInventoryManager = role === "inventory_manager";
+
+  // Filter items based on current role
+  const visibleNavItems = allNavItems.filter((item) =>
+    role === "admin" ? true : item.roles.includes(role || "")
+  );
 
   return (
     <>
@@ -52,13 +62,21 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ isOpen, onClose, onL
       >
         {/* Header */}
         <div className="px-5 py-5 border-b border-slate-800/60 flex items-center justify-between">
-          <Link href="/admin" className="flex items-center gap-2.5" onClick={onClose}>
+          <Link
+            href={isInventoryManager ? "/admin/components" : "/admin"}
+            className="flex items-center gap-2.5"
+            onClick={onClose}
+          >
             <div className="w-8 h-8 rounded-lg bg-cyan-500/15 border border-cyan-500/40 flex items-center justify-center">
               <Cpu className="w-4 h-4 text-cyan-400" />
             </div>
             <div>
-              <span className="text-sm font-bold text-white tracking-wide">RSVU Admin</span>
-              <span className="block text-[10px] text-slate-500 font-mono uppercase tracking-widest">Control Panel</span>
+              <span className="text-sm font-bold text-white tracking-wide">
+                {isInventoryManager ? "RSVU Inventory" : "RSVU Admin"}
+              </span>
+              <span className="block text-[10px] text-cyan-400 font-mono uppercase tracking-widest">
+                {isInventoryManager ? "Components & Borrowing" : "Super Admin Panel"}
+              </span>
             </div>
           </Link>
           <button onClick={onClose} className="lg:hidden text-slate-500 hover:text-white transition-colors">
@@ -68,8 +86,16 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ isOpen, onClose, onL
 
         {/* Navigation */}
         <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
-          <p className="px-3 py-1.5 text-[10px] font-mono text-slate-500 uppercase tracking-widest">Navigation</p>
-          {navItems.map((item) => {
+          <div className="px-3 py-1 flex items-center justify-between">
+            <p className="text-[10px] font-mono text-slate-500 uppercase tracking-widest">Navigation</p>
+            {isInventoryManager && (
+              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800/50">
+                Restricted
+              </span>
+            )}
+          </div>
+
+          {visibleNavItems.map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link
@@ -90,11 +116,21 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ isOpen, onClose, onL
           })}
         </nav>
 
-        {/* Footer */}
-        <div className="px-3 py-4 border-t border-slate-800/60">
+        {/* User Card & Footer */}
+        <div className="p-3 border-t border-slate-800/60 space-y-2">
+          {user && (
+            <div className="px-3 py-2 rounded-lg bg-slate-900/60 border border-slate-800/60 flex items-center gap-2.5">
+              <ShieldCheck className="w-4 h-4 text-cyan-400 shrink-0" />
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-semibold text-slate-200 truncate">{user.name}</p>
+                <p className="text-[10px] text-slate-400 font-mono truncate">{user.email}</p>
+              </div>
+            </div>
+          )}
+
           <button
             onClick={onLogout}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-all"
+            className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-all"
           >
             <LogOut className="w-4.5 h-4.5" />
             <span>Logout</span>

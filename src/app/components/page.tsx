@@ -1,13 +1,39 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
-import { componentsList } from "@/data/componentsData";
+import React, { useState, useMemo, useEffect } from "react";
+import { componentsList, ComponentItem } from "@/data/componentsData";
 import { ComponentCard } from "@/components/components-catalog/ComponentCard";
 import { Cpu, Search, AlertTriangle } from "lucide-react";
 
 export default function ComponentsPage() {
+  const [items, setItems] = useState<ComponentItem[]>(componentsList);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
+
+  useEffect(() => {
+    fetch("/api/components")
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.success && Array.isArray(res.data) && res.data.length > 0) {
+          const mapped: ComponentItem[] = res.data.map((d: any) => ({
+            id: d._id || d.id,
+            name: d.name,
+            model: d.model || "",
+            category: d.category,
+            status: d.status || "In Stock",
+            quantity: d.quantity,
+            availableQuantity: d.availableQuantity ?? d.quantity,
+            location: d.location || "Robotics Lab",
+            specs: d.specs || [],
+            image: d.image || "",
+            borrowable: d.borrowable ?? true,
+            notes: d.notes || "",
+          }));
+          setItems(mapped);
+        }
+      })
+      .catch((err) => console.log("Using static component catalog:", err));
+  }, []);
 
   const categories = [
     "All",
@@ -20,7 +46,7 @@ export default function ComponentsPage() {
   ];
 
   const filteredComponents = useMemo(() => {
-    return componentsList.filter((item) => {
+    return items.filter((item) => {
       const matchesCategory =
         selectedCategory === "All" || item.category === selectedCategory;
       const matchesSearch =
@@ -28,7 +54,7 @@ export default function ComponentsPage() {
         item.model.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesCategory && matchesSearch;
     });
-  }, [searchQuery, selectedCategory]);
+  }, [items, searchQuery, selectedCategory]);
 
   return (
     <div className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">

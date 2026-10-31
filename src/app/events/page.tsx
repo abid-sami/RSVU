@@ -77,21 +77,18 @@ export default function EventsPage() {
         />
       </div>
 
-      {/* Active Registration Banner (shown for All, Upcoming) */}
+      {/* Active Announcement Banner (shown for All, Upcoming) */}
       {filter !== "past" && (
         <div className="mb-8 flex flex-wrap items-center justify-between gap-4 p-4 rounded-xl bg-cyan-500/5 border border-cyan-500/20">
           <div className="flex items-center gap-3">
-            <span className="w-3 h-3 rounded-full bg-emerald-400 animate-ping"></span>
+            <span className="w-3 h-3 rounded-full bg-cyan-400 animate-ping"></span>
             <span className="font-mono text-xs sm:text-sm text-slate-200">
-              Official Registration for <strong>ROBOSPARK 2026</strong> is currently <strong>ACTIVE</strong>.
+              Official Segments for <strong>ROBOSPARK 1.1</strong> Announced: <strong>LFR Velocity Rush</strong>, <strong>LFR Nexus Challenge</strong>, <strong>Robo Soccer</strong>, and <strong>Robo Race</strong>. Date, venue, squad size & registration fee announcing soon.
             </span>
           </div>
-          <button
-            onClick={() => setRegistrationModalOpen(true)}
-            className="px-5 py-2 rounded bg-cyan-400 hover:bg-cyan-300 text-cyan-950 font-tech font-bold text-xs uppercase tracking-wider shadow-[0_0_15px_rgba(0,240,255,0.3)] transition-all"
-          >
-            REGISTER SQUAD NOW
-          </button>
+          <div className="px-4 py-1.5 rounded bg-cyan-500/15 border border-cyan-400/40 text-cyan-300 font-mono text-xs font-semibold uppercase tracking-wider">
+            ANNOUNCING SOON
+          </div>
         </div>
       )}
 

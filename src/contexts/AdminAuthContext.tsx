@@ -2,39 +2,45 @@
 
 import React, { createContext, useContext, useState, useCallback, useEffect } from "react";
 
-// =============================================
-// Admin Authentication Context
-// Client-side auth with brute-force protection
-// Replace with Supabase Auth later
-// =============================================
+export type AdminRole = "admin" | "inventory_manager";
+
+export interface AdminUser {
+  email: string;
+  name: string;
+  role: AdminRole;
+}
 
 interface AdminAuthState {
   isAuthenticated: boolean;
+  user: AdminUser | null;
   adminEmail: string | null;
+  role: AdminRole | null;
   failedAttempts: number;
   requiresCaptcha: boolean;
   isLockedOut: boolean;
   lockoutEndTime: number | null;
 }
 
+interface LoginResult {
+  success: boolean;
+  error?: string;
+  role?: AdminRole;
+  isLockedOut?: boolean;
+}
+
 interface AdminAuthContextType extends AdminAuthState {
-  login: (email: string, password: string, captchaAnswer?: string) => { success: boolean; error?: string };
+  login: (email: string, password: string, captchaAnswer?: string) => Promise<LoginResult>;
   logout: () => void;
   captchaQuestion: { question: string; answer: number } | null;
   generateCaptcha: () => void;
+  canAccess: (path: string) => boolean;
 }
 
 const AdminAuthContext = createContext<AdminAuthContextType | null>(null);
 
 const STORAGE_KEY = "rsvu_admin_auth";
-const ATTEMPTS_KEY = "rsvu_admin_attempts";
 const LOCKOUT_KEY = "rsvu_admin_lockout";
-const MAX_ATTEMPTS = 5;
-const LOCKOUT_DURATION = 5 * 60 * 1000; // 5 minutes
-
-// Default admin credentials (replace with Supabase Auth later)
-const ADMIN_EMAIL = "admin@rsvu.edu.bd";
-const ADMIN_PASSWORD = "rsvu2024";
+const ATTEMPTS_KEY = "rsvu_admin_attempts";
 
 function generateCaptchaQuestion(): { question: string; answer: number } {
   const a = Math.floor(Math.random() * 20) + 1;
@@ -45,7 +51,9 @@ function generateCaptchaQuestion(): { question: string; answer: number } {
 export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<AdminAuthState>({
     isAuthenticated: false,
+    user: null,
     adminEmail: null,
+    role: null,
     failedAttempts: 0,
     requiresCaptcha: false,
     isLockedOut: false,
@@ -54,19 +62,25 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
 
   const [captchaQuestion, setCaptchaQuestion] = useState<{ question: string; answer: number } | null>(null);
 
-  // Restore auth state on mount
+  // Restore auth state and check 24h lockout on mount
   useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (parsed.isAuthenticated && parsed.adminEmail) {
-          setState((prev) => ({ ...prev, isAuthenticated: true, adminEmail: parsed.adminEmail }));
+        if (parsed.isAuthenticated && parsed.user) {
+          setState((prev) => ({
+            ...prev,
+            isAuthenticated: true,
+            user: parsed.user,
+            adminEmail: parsed.user.email,
+            role: parsed.user.role,
+          }));
         }
       }
 
-      const attempts = parseInt(sessionStorage.getItem(ATTEMPTS_KEY) || "0", 10);
-      const lockoutEnd = parseInt(sessionStorage.getItem(LOCKOUT_KEY) || "0", 10);
+      const lockoutEnd = parseInt(localStorage.getItem(LOCKOUT_KEY) || "0", 10);
+      const attempts = parseInt(localStorage.getItem(ATTEMPTS_KEY) || "0", 10);
 
       if (lockoutEnd && Date.now() < lockoutEnd) {
         setState((prev) => ({
@@ -77,13 +91,9 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
           lockoutEndTime: lockoutEnd,
         }));
         setCaptchaQuestion(generateCaptchaQuestion());
-      } else if (attempts >= MAX_ATTEMPTS) {
-        setState((prev) => ({
-          ...prev,
-          failedAttempts: attempts,
-          requiresCaptcha: true,
-        }));
-        setCaptchaQuestion(generateCaptchaQuestion());
+      } else if (lockoutEnd && Date.now() >= lockoutEnd) {
+        localStorage.removeItem(LOCKOUT_KEY);
+        localStorage.removeItem(ATTEMPTS_KEY);
       }
     } catch {
       // Ignore storage errors
@@ -94,17 +104,51 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
     setCaptchaQuestion(generateCaptchaQuestion());
   }, []);
 
+  // Check if current role has permission to access a path
+  const canAccess = useCallback(
+    (path: string): boolean => {
+      if (!state.isAuthenticated || !state.role) return false;
+      if (state.role === "admin") return true;
+
+      // Inventory Manager only has access to Components & Borrowings
+      if (state.role === "inventory_manager") {
+        return path === "/admin/components" || path === "/admin/borrowings";
+      }
+
+      return false;
+    },
+    [state.isAuthenticated, state.role]
+  );
+
   const login = useCallback(
-    (email: string, password: string, captchaAnswer?: string): { success: boolean; error?: string } => {
-      // Check lockout
+    async (
+      email: string,
+      password: string,
+      captchaAnswer?: string
+    ): Promise<LoginResult> => {
+      // Check client-side 24-hour lockout
       if (state.isLockedOut && state.lockoutEndTime) {
         if (Date.now() < state.lockoutEndTime) {
-          const remaining = Math.ceil((state.lockoutEndTime - Date.now()) / 1000);
-          return { success: false, error: `Account temporarily locked. Try again in ${remaining} seconds.` };
+          const msLeft = state.lockoutEndTime - Date.now();
+          const hours = Math.floor(msLeft / (1000 * 60 * 60));
+          const minutes = Math.floor((msLeft % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((msLeft % (1000 * 60)) / 1000);
+          const timeStr =
+            hours > 0
+              ? `${hours}h ${minutes}m`
+              : minutes > 0
+              ? `${minutes}m ${seconds}s`
+              : `${seconds}s`;
+
+          return {
+            success: false,
+            isLockedOut: true,
+            error: `Security Alert: This account is blocked for 24 hours due to 10 failed attempts. Remaining: ${timeStr}.`,
+          };
         }
-        // Lockout expired, reset
-        sessionStorage.removeItem(LOCKOUT_KEY);
-        sessionStorage.setItem(ATTEMPTS_KEY, "0");
+        // Lockout expired
+        localStorage.removeItem(LOCKOUT_KEY);
+        localStorage.removeItem(ATTEMPTS_KEY);
         setState((prev) => ({
           ...prev,
           failedAttempts: 0,
@@ -114,77 +158,105 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
         }));
       }
 
-      // Verify CAPTCHA if required
-      if (state.requiresCaptcha && captchaQuestion) {
-        if (!captchaAnswer || parseInt(captchaAnswer, 10) !== captchaQuestion.answer) {
-          setCaptchaQuestion(generateCaptchaQuestion());
-          return { success: false, error: "Incorrect CAPTCHA answer. Please try again." };
-        }
-      }
+      try {
+        const res = await fetch("/api/admin/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email,
+            password,
+            captchaAnswer,
+            expectedCaptcha: captchaQuestion?.answer,
+          }),
+        });
 
-      // Verify credentials
-      if (email.toLowerCase().trim() === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-        // Success
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({ isAuthenticated: true, adminEmail: email }));
-        sessionStorage.setItem(ATTEMPTS_KEY, "0");
-        sessionStorage.removeItem(LOCKOUT_KEY);
+        const data = await res.json();
+
+        // Account is locked out for 24 hours (HTTP 423)
+        if (res.status === 423 || data.isLockedOut) {
+          const lockoutTimestamp = data.lockedUntil ? new Date(data.lockedUntil).getTime() : Date.now() + 24 * 60 * 60 * 1000;
+          localStorage.setItem(LOCKOUT_KEY, String(lockoutTimestamp));
+          localStorage.setItem(ATTEMPTS_KEY, "10");
+
+          setState((prev) => ({
+            ...prev,
+            isLockedOut: true,
+            lockoutEndTime: lockoutTimestamp,
+            failedAttempts: 10,
+            requiresCaptcha: true,
+          }));
+
+          return {
+            success: false,
+            isLockedOut: true,
+            error: data.error || "Account blocked for 24 hours.",
+          };
+        }
+
+        if (!data.success) {
+          const attempts = data.failedAttempts || state.failedAttempts + 1;
+          localStorage.setItem(ATTEMPTS_KEY, String(attempts));
+
+          if (data.requiresCaptcha || attempts >= 3) {
+            setCaptchaQuestion(generateCaptchaQuestion());
+          }
+
+          setState((prev) => ({
+            ...prev,
+            failedAttempts: attempts,
+            requiresCaptcha: data.requiresCaptcha || attempts >= 3,
+          }));
+
+          return {
+            success: false,
+            error: data.error || "Invalid credentials.",
+          };
+        }
+
+        // Authentication Successful
+        const user: AdminUser = {
+          email: data.user.email,
+          name: data.user.name,
+          role: data.user.role,
+        };
+
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify({ isAuthenticated: true, user })
+        );
+        localStorage.removeItem(ATTEMPTS_KEY);
+        localStorage.removeItem(LOCKOUT_KEY);
+
         setState({
           isAuthenticated: true,
-          adminEmail: email,
+          user,
+          adminEmail: user.email,
+          role: user.role,
           failedAttempts: 0,
           requiresCaptcha: false,
           isLockedOut: false,
           lockoutEndTime: null,
         });
+
         setCaptchaQuestion(null);
-        return { success: true };
-      }
-
-      // Failed attempt
-      const newAttempts = state.failedAttempts + 1;
-      sessionStorage.setItem(ATTEMPTS_KEY, String(newAttempts));
-
-      if (newAttempts >= MAX_ATTEMPTS) {
-        const lockoutEnd = Date.now() + LOCKOUT_DURATION;
-        sessionStorage.setItem(LOCKOUT_KEY, String(lockoutEnd));
-        setCaptchaQuestion(generateCaptchaQuestion());
-        setState((prev) => ({
-          ...prev,
-          failedAttempts: newAttempts,
-          requiresCaptcha: true,
-          isLockedOut: true,
-          lockoutEndTime: lockoutEnd,
-        }));
+        return { success: true, role: user.role };
+      } catch (err: any) {
         return {
           success: false,
-          error: `Too many failed attempts. Account locked for 5 minutes. CAPTCHA verification required.`,
+          error: "Connection error. Please verify backend service.",
         };
       }
-
-      const remaining = MAX_ATTEMPTS - newAttempts;
-      if (newAttempts >= MAX_ATTEMPTS - 1) {
-        setCaptchaQuestion(generateCaptchaQuestion());
-      }
-
-      setState((prev) => ({
-        ...prev,
-        failedAttempts: newAttempts,
-        requiresCaptcha: newAttempts >= MAX_ATTEMPTS - 1,
-      }));
-
-      return {
-        success: false,
-        error: `Invalid credentials. ${remaining} attempt${remaining !== 1 ? "s" : ""} remaining.`,
-      };
     },
-    [state.failedAttempts, state.isLockedOut, state.lockoutEndTime, state.requiresCaptcha, captchaQuestion]
+    [state.isLockedOut, state.lockoutEndTime, state.failedAttempts, captchaQuestion]
   );
 
   const logout = useCallback(() => {
     localStorage.removeItem(STORAGE_KEY);
     setState({
       isAuthenticated: false,
+      user: null,
       adminEmail: null,
+      role: null,
       failedAttempts: 0,
       requiresCaptcha: false,
       isLockedOut: false,
@@ -201,6 +273,7 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
         logout,
         captchaQuestion,
         generateCaptcha,
+        canAccess,
       }}
     >
       {children}

@@ -50,6 +50,11 @@ function parseDeptAndBatch(deptString?: string, explicitBatch?: string) {
 
 export const MemberCard: React.FC<MemberCardProps> = ({ member }) => {
   const { department, batch } = parseDeptAndBatch(member.department, member.batch);
+  const [avatarSrc, setAvatarSrc] = React.useState(member.avatar || "/default-avatar.png");
+
+  React.useEffect(() => {
+    setAvatarSrc(member.avatar || "/default-avatar.png");
+  }, [member.avatar]);
 
   return (
     <div className="w-full bg-[#0d1322] border border-slate-700/60 hover:border-cyan-500/50 rounded-[24px] p-6 sm:p-7 shadow-xl shadow-black/50 hover:shadow-[0_10px_35px_rgba(0,240,255,0.18)] transition-all duration-300 flex flex-col justify-between items-center text-center group relative overflow-hidden">
@@ -62,11 +67,12 @@ export const MemberCard: React.FC<MemberCardProps> = ({ member }) => {
         <div className="relative p-1 rounded-full bg-gradient-to-tr from-cyan-400 via-sky-500 to-blue-600 shadow-[0_0_20px_rgba(0,240,255,0.4)] group-hover:shadow-[0_0_30px_rgba(0,240,255,0.7)] group-hover:scale-105 transition-all duration-500">
           <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden border-2 border-[#0d1322] bg-slate-950">
             <Image
-              src={member.avatar}
+              src={avatarSrc}
               alt={member.name}
               fill
               sizes="(max-width: 640px) 120px, 140px"
               className="object-cover object-top"
+              onError={() => setAvatarSrc("/default-avatar.png")}
             />
           </div>
         </div>

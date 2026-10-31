@@ -1,7 +1,7 @@
 export interface ClubEvent {
   id: string;
   title: string;
-  category: "Robo Soccer" | "Line Follower" | "Hardware Showcase" | "Poster Presentation" | "Workshop" | "Championship";
+  category: "Robo Soccer" | "Line Follower" | "Hardware Showcase" | "Poster Presentation" | "Workshop" | "Championship" | "Robo Race";
   status: "upcoming" | "past";
   date: string;
   time?: string;
@@ -14,87 +14,96 @@ export interface ClubEvent {
   fullDescription: string;
   highlights: string[];
   rulebookUrl?: string;
-  registration?: "Open" | "Closed";
+  registration?: "Open" | "Closed" | "Upcoming";
   registrationOpen?: boolean;
+  registrationStatusText?: string;
+  registrationCtaText?: string;
 }
 
 export const upcomingEvents: ClubEvent[] = [
- 
   {
-    id: "robo-soccer-2026",
-    title: "Robo Soccer Championship",
-    category: "Robo Soccer",
-    status: "upcoming",
-    date: "November 28, 2026",
-    time: "",
-    venue: "Main Arena, Central Auditorium, VU",
-    prizePool: "BDT 40,000",
-    fee: "BDT 1,500",
-    teamSize: "2 - 4 Members",
-    image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=1000&q=80",
-    shortDescription: "High-octane autonomous & manual bots clashing in tactical gridiron football matches.",
-    fullDescription:
-      "Prepare your dual-motor chassis, wireless telemetry, and tactical kick mechanisms. Teams from across Bangladesh will pit their custom bots in a rugged miniature football arena. Experience lightning-fast accelerations, defensive barricades, and precision shooting.",
-    highlights: ["Real-time 2.4GHz RF control", "Defensive & offensive chassis specs", "Double elimination bracket"],
-    rulebookUrl: "#rulebook-soccer",
-    registrationOpen: true,
-  },
-  {
-    id: "line-follower-2026",
-    title: "Line Follower Robot (LFR) Velocity",
+    id: "lfr-velocity-rush",
+    title: "LFR Velocity Rush",
     category: "Line Follower",
     status: "upcoming",
-    date: "November 28, 2026",
-    time: "11:30 AM - 04:00 PM",
-    venue: "Robotics Track Zone B, Ground Floor",
-    prizePool: "BDT 35,000",
-    fee: "BDT 1,000",
-    teamSize: "1 - 3 Members",
-    image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1000&q=80",
-    shortDescription: "PID-tuned speedsters navigating acute turns, intersections, inverted colors, and speed bumps.",
+    date: "To Be Announced (TBA)",
+    venue: "To Be Announced (TBA)",
+    fee: "TBA",
+    teamSize: "TBA",
+    prizePool: "Announcing Soon",
+    image: "/Gallery/774185974_122141499879081563_2515616477361728924_n.jpg",
+    shortDescription: "High-octane sprint line follower track designed for lightning-fast straightaways and precision speed tuning in RoboSpark 1.1.",
     fullDescription:
-      "The definitive test of sensor calibration, PID tuning, and high-RPM micro metal gearmotors. Autonomous bots must trace complex black lines on white surfaces featuring hairpins, gaps, 90-degree zigzags, and elevation ramps without human intervention.",
-    highlights: ["Advanced PID tuning test", "Dynamic lighting resistance", "Laser gate lap timing precision"],
-    rulebookUrl: "#rulebook-lfr",
-    registrationOpen: true,
+      "LFR Velocity Rush challenges autonomous robotics builders to maximize velocity without sacrificing tracking stability. Featuring precision straightaways, gradual curves, and high-RPM motor driving, this segment tests the extreme limits of PID tuning and sensor response times.",
+    highlights: ["Sprint velocity straightaways", "High-response sensor array benchmarking", "Digital timing gates"],
+    rulebookUrl: "#rulebook-velocity-rush",
+    registration: "Upcoming",
+    registrationOpen: false,
+    registrationStatusText: "Details Announcing Soon",
+    registrationCtaText: "DETAILS ANNOUNCING SOON",
   },
   {
-    id: "hardware-showcase-2026",
-    title: "National Hardware Showcase",
-    category: "Hardware Showcase",
+    id: "lfr-nexus-challenge",
+    title: "LFR Nexus Challenge",
+    category: "Line Follower",
     status: "upcoming",
-    date: "November 29, 2026",
-    time: "09:30 AM - 03:30 PM",
-    venue: "Engineering Atrium & Innovation Hall",
-    prizePool: "BDT 50,000",
-    fee: "BDT 1,200",
-    teamSize: "2 - 5 Members",
-    image: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1000&q=80",
-    shortDescription: "Innovative engineering prototypes solving industrial automation, healthcare, and robotics challenges.",
+    date: "To Be Announced (TBA)",
+    venue: "To Be Announced (TBA)",
+    fee: "TBA",
+    teamSize: "TBA",
+    prizePool: "Announcing Soon",
+    image: "/Gallery/768406560_122139634979081563_8188267272714275034_n.jpg",
+    shortDescription: "A sophisticated navigational maze featuring acute hairpin bends, line inversions, and multi-path decision logic.",
     fullDescription:
-      "Display your embedded hardware systems, agricultural rovers, biomedical diagnostic tools, and IoT automation products. Evaluated by university faculty, industry engineering leaders, and venture mentors on novelty, execution, and commercial viability.",
-    highlights: ["Live working prototype demos", "Industry jury assessment", "Incubation & funding opportunities"],
-    rulebookUrl: "#rulebook-hardware",
-    registrationOpen: true,
+      "LFR Nexus Challenge represents the pinnacle of algorithmic intelligence. Autonomous bots must navigate through intricate intersections, sharp acute loops, elevation ramps, and inverted track colors with zero manual interventions.",
+    highlights: ["Acute 90° & hairpin navigation", "Inverted surface handling", "Algorithmic path decision benchmark"],
+    rulebookUrl: "#rulebook-nexus-challenge",
+    registration: "Upcoming",
+    registrationOpen: false,
+    registrationStatusText: "Details Announcing Soon",
+    registrationCtaText: "DETAILS ANNOUNCING SOON",
   },
   {
-    id: "poster-presentation-2026",
-    title: "Robotics & AI Poster Presentation",
-    category: "Poster Presentation",
+    id: "robo-soccer-1-1",
+    title: "Robo Soccer",
+    category: "Robo Soccer",
     status: "upcoming",
-    date: "November 29, 2026",
-    time: "10:00 AM - 02:00 PM",
-    venue: "Faculty Seminar Hall 3, VU",
-    prizePool: "BDT 25,000",
-    fee: "BDT 500",
-    teamSize: "1 - 3 Members",
-    image: "https://images.unsplash.com/photo-1507668077129-56e32842fceb?auto=format&fit=crop&w=1000&q=80",
-    shortDescription: "Original research concepts in autonomous mobile robotics, computer vision, and ROS 2 pipelines.",
+    date: "To Be Announced (TBA)",
+    venue: "To Be Announced (TBA)",
+    fee: "TBA",
+    teamSize: "TBA",
+    prizePool: "Announcing Soon",
+    image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=1000&q=80",
+    shortDescription: "High-adrenaline tactical football clash where wireless combat bots battle for turf dominance and goal precision.",
     fullDescription:
-      "Present novel engineering research, algorithmic solutions in SLAM, computer vision for manipulator arms, reinforcement learning for quadruped robots, and human-robot interaction architectures.",
-    highlights: ["Peer-reviewed evaluation", "Academic poster format standard", "Certificate of publication honor"],
-    rulebookUrl: "#rulebook-poster",
-    registrationOpen: true,
+      "Equip your high-torque wireless bots for the premier Robo Soccer arena at RoboSpark 1.1. Maneuver through opponent barricades, pass, block, and execute precision shots in an intense knockout tournament format.",
+    highlights: ["2.4GHz wireless control arena", "Tactical offensive & defensive bot specs", "Double elimination championship bracket"],
+    rulebookUrl: "#rulebook-soccer",
+    registration: "Upcoming",
+    registrationOpen: false,
+    registrationStatusText: "Details Announcing Soon",
+    registrationCtaText: "DETAILS ANNOUNCING SOON",
+  },
+  {
+    id: "robo-race-1-1",
+    title: "Robo Race",
+    category: "Robo Race",
+    status: "upcoming",
+    date: "To Be Announced (TBA)",
+    venue: "To Be Announced (TBA)",
+    fee: "TBA",
+    teamSize: "TBA",
+    prizePool: "Announcing Soon",
+    image: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1000&q=80",
+    shortDescription: "Rugged all-terrain obstacle endurance rally testing chassis suspension, powertrain torque, and pilot reflex.",
+    fullDescription:
+      "Robo Race puts remote-controlled all-terrain bots against an unforgiving obstacle course containing elevation ramps, gravel pits, rocker-bogie tests, bridge crossings, and speed chicanes. Only the most durable chassis and sharpest pilots will take the podium.",
+    highlights: ["All-terrain obstacles & elevation ramps", "Suspension & torque endurance test", "Time-trial knockout showdown"],
+    rulebookUrl: "#rulebook-robo-race",
+    registration: "Upcoming",
+    registrationOpen: false,
+    registrationStatusText: "Details Announcing Soon",
+    registrationCtaText: "DETAILS ANNOUNCING SOON",
   },
 ];
 

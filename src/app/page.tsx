@@ -29,6 +29,7 @@ import {
   ArrowRight,
   Sparkles,
   Zap,
+  Activity,
   Code,
   Layers,
   Award,
@@ -173,7 +174,7 @@ export default function HomePage() {
                 </div>
                 <div>
                   <div className="font-tech font-black text-3xl sm:text-4xl text-white group-hover:text-cyan-400 italic tracking-tight transition-colors text-glow-subtle">
-                    41
+                    42
                   </div>
                   <div className="font-tech uppercase italic text-xs sm:text-sm text-slate-300 font-bold tracking-wide mt-1.5 leading-snug">
                     Executive Members
@@ -188,7 +189,7 @@ export default function HomePage() {
                 </div>
                 <div>
                   <div className="font-tech font-black text-3xl sm:text-4xl text-white group-hover:text-cyan-400 italic tracking-tight transition-colors text-glow-subtle">
-                    5
+                    1
                   </div>
                   <div className="font-tech uppercase italic text-xs sm:text-sm text-slate-300 font-bold tracking-wide mt-1.5 leading-snug">
                     Events Organized
@@ -203,7 +204,7 @@ export default function HomePage() {
                 </div>
                 <div>
                   <div className="font-tech font-black text-3xl sm:text-4xl text-white group-hover:text-cyan-400 italic tracking-tight transition-colors text-glow-subtle">
-                    10
+                    3
                   </div>
                   <div className="font-tech uppercase italic text-xs sm:text-sm text-slate-300 font-bold tracking-wide mt-1.5 leading-snug">
                     Workshops
@@ -342,7 +343,7 @@ export default function HomePage() {
             ))}
           </div>
 
-          {/* Top 3 Achievements Showcase */}
+          {/* Top 3 Achievements Showcase
           <div className="space-y-6 sm:space-y-8">
             {achievementsList.slice(0, 3).map((ach) => (
               <AchievementCard key={ach.id} item={ach} hideMembersOnMobile={true} />
@@ -357,16 +358,16 @@ export default function HomePage() {
               <span>VIEW FULL TROPHY ARCHIVE & RESEARCH CITATIONS</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
-          </div>
+          </div> */}
         </section>
 
         {/* 7. Club Target & Development Roadmap */}
         <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-cyan-500/10">
           <SectionHeading
-            badge="FUTURE INITIATIVES"
-            title="STRATEGIC GOALS &"
+            badge="CLUB MISSION & TARGETS"
+            title="OUR GOALS &"
             highlightText="DEVELOPMENT TARGETS"
-            subtitle="The roadmap steering our technological expansion, laboratory equipment acquisition, and upcoming national outreach."
+            subtitle="The roadmap steering our hands-on workshops, robotics competitions, research mentorship, and technological expansion."
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -525,7 +526,7 @@ export default function HomePage() {
             </p>
             <div className="mt-4 p-3 rounded bg-slate-900 border border-slate-800 space-y-1 text-xs font-mono text-slate-300">
               <div>Location: {borrowModalItem.location}</div>
-              <div>Available: {borrowModalItem.availableQuantity} units</div>
+              <div>Available: {borrowModalItem.availableQuantity}</div>
               <div>Model: {borrowModalItem.model}</div>
             </div>
             <p className="mt-4 text-xs text-slate-300 font-sans">
