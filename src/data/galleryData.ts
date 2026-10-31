@@ -22,7 +22,7 @@ export const galleryItems: GalleryItem[] = [
   },
   {
     id: "gal-2",
-    title: "Robotics Society Lab B-101 Entrance & Member Discussions",
+    title: "Robotics ciety Lab B-101 Entrance & Member Discussions",
     category: "Hardware Labs",
     date: "Lab Chronicles",
     image: "/Gallery/775260342_122141978223081563_4010595670602426100_n.jpg",
