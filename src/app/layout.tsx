@@ -87,6 +87,12 @@ export const metadata: Metadata = {
     apple: "https://i.ibb.co.com/LD6DpyVB/RSVU.webp",
   },
   manifest: "/site.webmanifest",
+  verification: {
+    google:
+      process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ||
+      siteConfig.googleSiteVerification ||
+      undefined,
+  },
 };
 
 export default function RootLayout({
