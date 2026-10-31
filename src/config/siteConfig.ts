@@ -14,7 +14,11 @@ export const siteConfig = {
   // Official RSVU Robotics logo & SEO assets
   logoUrl: "https://i.ibb.co.com/LD6DpyVB/RSVU.webp",
   localLogoUrl: "/logo.webp",
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://rsvu.vercel.app",
+  siteUrl:
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    (process.env.VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+      : "https://rsvu.vercel.app"),
   ogImageUrl: "/og-image.jpg",
   // Google Search Console Verification Code (content="..." from your meta tag)
   googleSiteVerification: "BlghWvxt9qmwDludErWzLo1YYvsAiMZakqqD96fExw8",
