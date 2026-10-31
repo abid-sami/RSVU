@@ -120,7 +120,7 @@ export default function AdminComponentsPage() {
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
                       {c.image && (
-                        <img src={c.image} alt={c.name} className="w-10 h-10 rounded-lg object-cover bg-slate-800" />
+                        <img src={c.image} alt={c.name} className="w-10 h-10 rounded-lg object-contain p-0.5 bg-slate-900 border border-slate-800" />
                       )}
                       <span className="text-slate-200 font-medium">{c.name}</span>
                     </div>
