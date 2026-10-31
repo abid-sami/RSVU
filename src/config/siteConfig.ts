@@ -11,9 +11,11 @@ export const siteConfig = {
   // Single easy-to-edit configuration variable for Hero background video
   heroVideoUrl: "/loading.mp4",
 
-  // Official RSVU Robotics logo
+  // Official RSVU Robotics logo & SEO assets
   logoUrl: "https://i.ibb.co.com/LD6DpyVB/RSVU.webp",
   localLogoUrl: "/logo.webp",
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://rsvu.vercel.app",
+  ogImageUrl: "/og-image.jpg",
 
   stats: {
     yearsActive: "12+",

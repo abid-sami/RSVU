@@ -26,7 +26,11 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "About Us",
-  description: "Learn about the history, vision, mission, and advisors of Robotics Society of Varendra University.",
+  description: "Learn about the history, vision, mission, and faculty advisors of Robotics Society of Varendra University.",
+  openGraph: {
+    title: "About Us | RSVU Robotics",
+    description: "Learn about the history, vision, mission, and faculty advisors of Robotics Society of Varendra University.",
+  },
 };
 
 export default function AboutPage() {
