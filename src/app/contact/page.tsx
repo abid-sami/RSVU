@@ -17,6 +17,7 @@ import {
   Clock,
   ShieldCheck,
   HelpCircle,
+  ExternalLink,
 } from "lucide-react";
 
 export default function ContactPage() {
@@ -45,7 +46,11 @@ export default function ContactPage() {
   const faqs = [
     {
       q: "Who can join the Robotics Society of Varendra University?",
-      a: "Membership is open to all enrolled undergraduate students of Varendra University from any engineering or science department (CSE, EEE, Pharmacy, etc.). No prior robotics experience is needed for freshman recruitments.",
+      a: "Membership is open to all enrolled undergraduate students of Varendra University from any engineering or science department (CSE, EEE, Pharmacy, etc.). Recruitment is currently open! Submit your application via the official joining form before 1 November.",
+      action: {
+        label: "Open Official Joining Form (Deadline: 1 November)",
+        url: siteConfig.recruitment.formUrl,
+      },
     },
     {
       q: "How can non-VU students or teams register for RoboSpark?",
@@ -64,7 +69,7 @@ export default function ContactPage() {
   return (
     <div className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       {/* Header */}
-      <div className="text-center max-w-3xl mx-auto mb-16">
+      <div className="text-center max-w-3xl mx-auto mb-12">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full badge-cyan text-xs font-mono uppercase tracking-wider mb-4">
           <Sparkles className="w-3.5 h-3.5" />
           <span>COMMUNICATION TELEMETRY</span>
@@ -75,6 +80,37 @@ export default function ContactPage() {
         <p className="mt-4 text-sm sm:text-base text-slate-300 font-sans leading-relaxed">
           Have an inquiry about upcoming tournaments, sponsorship partnerships, or joining our research squads? We look forward to connecting.
         </p>
+      </div>
+
+      {/* Active Recruitment Announcement Banner */}
+      <div className="mb-12 cyber-panel rounded-2xl p-6 sm:p-7 border border-cyan-500/40 bg-gradient-to-r from-cyan-950/40 via-slate-900/80 to-[#0c1322] flex flex-col md:flex-row items-start md:items-center justify-between gap-5 shadow-[0_0_30px_rgba(0,240,255,0.12)]">
+        <div className="flex items-start gap-3.5">
+          <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center shrink-0 mt-0.5">
+            <Sparkles className="w-5 h-5 text-cyan-400" />
+          </div>
+          <div>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="font-tech text-base sm:text-lg font-bold text-white uppercase italic tracking-wide">
+                JOIN SOCIETY RECRUITMENT IS LIVE
+              </span>
+              <span className="px-2.5 py-0.5 rounded text-[11px] font-mono bg-amber-500/20 border border-amber-500/40 text-amber-300 font-bold">
+                Last Date: {siteConfig.recruitment.deadline}
+              </span>
+            </div>
+            <p className="text-xs text-slate-300 font-sans mt-1 leading-relaxed">
+              Recruitment is open for all Varendra University students. Fill out our official Google Form to become an innovator in RSVU Robotics.
+            </p>
+          </div>
+        </div>
+        <a
+          href={siteConfig.recruitment.formUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full md:w-auto px-6 py-3 rounded-lg bg-cyan-400 hover:bg-cyan-300 text-cyan-950 font-tech font-bold text-xs uppercase tracking-wider italic transition-all shadow-[0_0_20px_rgba(0,240,255,0.4)] flex items-center justify-center gap-2 shrink-0 group whitespace-nowrap"
+        >
+          <span>OPEN JOINING FORM</span>
+          <ExternalLink className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
+        </a>
       </div>
 
       {/* Main Grid: Info + Contact Form */}
@@ -298,6 +334,17 @@ export default function ContactPage() {
                   <p className="mt-2 text-xs text-slate-300 font-sans leading-relaxed">
                     {faq.a}
                   </p>
+                  {"action" in faq && faq.action && (
+                    <a
+                      href={faq.action.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 mt-3 text-xs font-mono font-bold text-cyan-400 hover:text-cyan-300 transition-colors"
+                    >
+                      <span>{faq.action.label}</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  )}
                 </div>
               </div>
             </div>

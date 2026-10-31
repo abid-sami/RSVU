@@ -484,22 +484,31 @@ export default function HomePage() {
                 Whether you are passionate about autonomous mobile rovers, combat bot engineering, computer vision, or embedded IoT telemetry — your journey starts here.
               </p>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-                <Link
-                  href="/contact"
-                  className="w-full sm:w-auto px-8 py-3.5 rounded-lg bg-cyan-400 hover:bg-cyan-300 text-cyan-950 font-tech font-bold text-sm tracking-wider uppercase italic transition-all shadow-[0_0_25px_rgba(0,240,255,0.5)] flex items-center justify-center gap-2"
-                >
-                  <span>JOIN RSVU ROBOTICS</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
+              <div className="flex flex-col items-center justify-center gap-4 pt-4">
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
+                  <a
+                    href={siteConfig.recruitment.formUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full sm:w-auto px-8 py-3.5 rounded-lg bg-cyan-400 hover:bg-cyan-300 text-cyan-950 font-tech font-bold text-sm tracking-wider uppercase italic transition-all shadow-[0_0_25px_rgba(0,240,255,0.5)] flex items-center justify-center gap-2 group"
+                  >
+                    <span>JOIN RSVU ROBOTICS</span>
+                    <ExternalLink className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+                  </a>
 
-                <Link
-                  href="/members"
-                  className="w-full sm:w-auto px-8 py-3.5 rounded-lg bg-slate-900 border border-cyan-500/30 hover:border-cyan-400 text-slate-200 hover:text-white font-tech font-bold text-sm tracking-wider uppercase italic transition-all flex items-center justify-center gap-2"
-                >
-                  <Users className="w-4 h-4 text-cyan-400" />
-                  <span>MEET OUR EXECUTIVE PANEL</span>
-                </Link>
+                  <Link
+                    href="/members"
+                    className="w-full sm:w-auto px-8 py-3.5 rounded-lg bg-slate-900 border border-cyan-500/30 hover:border-cyan-400 text-slate-200 hover:text-white font-tech font-bold text-sm tracking-wider uppercase italic transition-all flex items-center justify-center gap-2"
+                  >
+                    <Users className="w-4 h-4 text-cyan-400" />
+                    <span>MEET OUR EXECUTIVE PANEL</span>
+                  </Link>
+                </div>
+
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-mono">
+                  <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                  <span>Official Joining Form · Last Date: <strong className="text-white font-bold">{siteConfig.recruitment.deadline}</strong></span>
+                </div>
               </div>
             </div>
           </div>

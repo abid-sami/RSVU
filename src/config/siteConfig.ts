@@ -45,6 +45,14 @@ export const siteConfig = {
     youtube: "/",
   },
 
+  recruitment: {
+    enabled: true,
+    title: "Join Society",
+    deadline: "1 November",
+    formUrl:
+      "https://docs.google.com/forms/d/e/1FAIpQLSezSXnV2RdG8uwecUME_O_v3XoaqYDQfl598-tpMk50OEffwg/viewform",
+  },
+
   navLinks: [
     { name: "HOME", href: "/" },
     { name: "ABOUT", href: "/about" },

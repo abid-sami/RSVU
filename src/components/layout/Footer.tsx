@@ -164,9 +164,20 @@ export const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="hover:text-cyan-300 transition-colors">
-                  Join Society
-                </Link>
+                <a
+                  href={siteConfig.recruitment.formUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-cyan-300 transition-colors flex items-center justify-between group"
+                >
+                  <span className="flex items-center gap-1.5">
+                    Join Society
+                    <ExternalLink className="w-3 h-3 text-cyan-400 opacity-70 group-hover:opacity-100" />
+                  </span>
+                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-500/15 border border-amber-500/30 text-amber-300">
+                    Till {siteConfig.recruitment.deadline}
+                  </span>
+                </a>
               </li>
             </ul>
           </div>
