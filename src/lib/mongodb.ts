@@ -33,9 +33,11 @@ export async function connectToDatabase(): Promise<typeof mongoose> {
     // Ignore if not allowed
   }
 
-  if (!MONGODB_URI) {
+  const uri = process.env.MONGODB_URI || MONGODB_URI;
+
+  if (!uri) {
     throw new Error(
-      "Please define the MONGODB_URI environment variable inside .env.local"
+      "Please define the MONGODB_URI environment variable inside your deployment settings (e.g. Vercel Project Settings -> Environment Variables) or in .env.local"
     );
   }
 
@@ -49,7 +51,7 @@ export async function connectToDatabase(): Promise<typeof mongoose> {
       serverSelectionTimeoutMS: 5000,
     };
 
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongooseInstance) => {
+    cached.promise = mongoose.connect(uri, opts).then((mongooseInstance) => {
       return mongooseInstance;
     });
   }
